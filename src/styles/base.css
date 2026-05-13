@@ -15,8 +15,8 @@ body {
   font-family: var(--font-sans);
   font-size: var(--size-14);
   color: var(--text-primary);
-  background: radial-gradient(circle at top, #f7f9fb 0%, var(--bg-canvas) 68%);
-  line-height: 1.4;
+  background: radial-gradient(circle at top, #fff9ef 0%, var(--bg-canvas) 70%);
+  line-height: 1.5;
 }
 
 h1,

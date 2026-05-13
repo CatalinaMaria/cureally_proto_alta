@@ -8,7 +8,7 @@ import { InputField } from '../../components/forms/InputField';
 import { MobileFrame } from '../../components/layout/MobileFrame';
 
 export function LoginScreen() {
-  const { login, loginDemoMode } = useAuth();
+  const { login } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
   const [email, setEmail] = useState(demoCredentials.email);
@@ -22,25 +22,22 @@ export function LoginScreen() {
 
     const ok = login(email, password);
     if (!ok) {
-      setError('Credenciales inválidas. Usá el acceso de demostración para continuar.');
+      setError('Credenciales inválidas. Usá las credenciales de demostración para continuar.');
       return;
     }
 
     navigate(from, { replace: true });
   };
 
-  const handleDemoMode = () => {
-    loginDemoMode();
-    navigate('/home', { replace: true });
-  };
-
   return (
     <MobileFrame>
-      <div className="public-screen">
-        <p className="brand-name">CureAlly</p>
-        <h1>Iniciar sesión</h1>
-        <Card>
-          <form className="stack-md" onSubmit={handleSubmit}>
+      <div className="public-screen login-screen">
+        <div className="login-header">
+          <p className="brand-name">CureAlly</p>
+          <h1>Iniciar sesión</h1>
+        </div>
+        <Card className="login-panel">
+          <form className="stack-md login-form" onSubmit={handleSubmit}>
             <InputField
               id="email"
               label="Email"
@@ -62,10 +59,10 @@ export function LoginScreen() {
               required
             />
             {error ? <p className="error-text">{error}</p> : null}
-            <Button type="submit" fullWidth>
+            <Button type="submit" fullWidth className="login-submit">
               Iniciar sesión
             </Button>
-            <div className="login-links">
+            <div className="login-links login-actions">
               <button type="button" className="text-button" onClick={() => setError('Funcionalidad disponible próximamente.') }>
                 ¿Olvidaste tu contraseña?
               </button>
@@ -79,14 +76,9 @@ export function LoginScreen() {
             </div>
           </form>
         </Card>
-        <Card>
-          <p className="muted-text">
-            Credenciales demo: <strong>{demoCredentials.email}</strong> / <strong>{demoCredentials.password}</strong>
-          </p>
-          <Button variant="secondary" fullWidth onClick={handleDemoMode}>
-            Entrar en modo demo
-          </Button>
-        </Card>
+        <p className="login-demo-note">
+          Credenciales demo: <strong>{demoCredentials.email}</strong> / <strong>{demoCredentials.password}</strong>
+        </p>
       </div>
     </MobileFrame>
   );
