@@ -51,10 +51,13 @@ export interface Task {
 }
 
 export type AlertSeverity = 'alta' | 'media' | 'baja';
+export type AlertType = 'falta_confirmacion' | 'turno_proximo' | 'informe_nuevo';
 
 export interface Alert {
   id: string;
+  tipo: AlertType;
   titulo: string;
+  descripcion: string;
   hora: string;
   severidad: AlertSeverity;
   confirmada: boolean;

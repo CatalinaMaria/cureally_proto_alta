@@ -97,24 +97,30 @@ export const initialTasks: Task[] = [
 export const initialAlerts: Alert[] = [
   {
     id: 'alert-1',
-    titulo: 'Administrar Memantina a las 8:00 AM',
+    tipo: 'falta_confirmacion',
+    titulo: 'Medicación sin confirmar',
+    descripcion: 'Carolina aún no confirmó Memantina 20 mg de las 8:00 AM.',
     hora: '08:00 AM',
     severidad: 'alta',
     confirmada: false,
   },
   {
     id: 'alert-2',
-    titulo: 'Turno médico en 30 min',
+    tipo: 'turno_proximo',
+    titulo: 'Turno médico próximo',
+    descripcion: 'Juan tiene una consulta médica en 30 minutos.',
     hora: '05:30 PM',
     severidad: 'media',
     confirmada: false,
   },
   {
     id: 'alert-3',
-    titulo: 'Falta confirmar medicación de la tarde',
-    hora: '02:00 PM',
+    tipo: 'informe_nuevo',
+    titulo: 'Nuevo informe disponible',
+    descripcion: 'Carolina cargó el informe diario de la mañana.',
+    hora: '11:45 AM',
     severidad: 'baja',
-    confirmada: true,
+    confirmada: false,
   },
 ];
 

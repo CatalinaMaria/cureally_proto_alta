@@ -5,23 +5,52 @@ import { Card } from './Card';
 
 interface AlertListProps {
   alerts: Alert[];
-  onConfirm: (alertId: string) => void;
+  onRequestConfirmation: (alert: Alert) => void;
+  onContactCaregiver: (alert: Alert) => void;
+  onViewCalendar: (alert: Alert) => void;
+  onViewReport: (alert: Alert) => void;
 }
 
-export function AlertList({ alerts, onConfirm }: AlertListProps) {
+export function AlertList({
+  alerts,
+  onRequestConfirmation,
+  onContactCaregiver,
+  onViewCalendar,
+  onViewReport,
+}: AlertListProps) {
   return (
     <div className="stack-sm">
       {alerts.map((alert) => (
-        <Card key={alert.id} className="list-card">
+        <Card key={alert.id} className="list-card alert-card">
           <div className="list-card__row">
             <p className="list-card__title">{alert.titulo}</p>
             <Badge variant={severityToVariant(alert.severidad)}>{capitalize(alert.severidad)}</Badge>
           </div>
-          <div className="list-card__row">
-            <span className="muted-text">Horario: {alert.hora}</span>
-            <Button variant={alert.confirmada ? 'ghost' : 'secondary'} onClick={() => onConfirm(alert.id)} disabled={alert.confirmada}>
-              {alert.confirmada ? 'Confirmada' : 'Confirmar'}
-            </Button>
+          <p className="alert-card__description">{alert.descripcion}</p>
+          <p className="list-card__meta">Horario de referencia: {alert.hora}</p>
+          <div className="alert-card__actions">
+            {alert.tipo === 'falta_confirmacion' ? (
+              <>
+                <Button type="button" variant="secondary" onClick={() => onRequestConfirmation(alert)}>
+                  Solicitar confirmación
+                </Button>
+                <Button type="button" variant="ghost" onClick={() => onContactCaregiver(alert)}>
+                  Contactar cuidadora
+                </Button>
+              </>
+            ) : null}
+
+            {alert.tipo === 'turno_proximo' ? (
+              <Button type="button" variant="secondary" onClick={() => onViewCalendar(alert)}>
+                Ver calendario
+              </Button>
+            ) : null}
+
+            {alert.tipo === 'informe_nuevo' ? (
+              <Button type="button" variant="secondary" onClick={() => onViewReport(alert)}>
+                Ver informe
+              </Button>
+            ) : null}
           </div>
         </Card>
       ))}

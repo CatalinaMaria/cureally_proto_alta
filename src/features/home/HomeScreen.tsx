@@ -44,7 +44,7 @@ export function HomeScreen() {
     {
       id: 'quick-alerts',
       titulo: 'Alertas',
-      descripcion: 'Confirmar recordatorios',
+      descripcion: 'Revisar avisos importantes',
       icon: 'alerts',
       onSelect: () => navigate('/alerts'),
     },
