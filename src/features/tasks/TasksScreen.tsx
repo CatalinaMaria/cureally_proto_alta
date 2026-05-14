@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { useCareStore } from '../../app/care-store';
 import { DailyReportCard } from '../../components/cards/DailyReportCard';
 import { TaskList } from '../../components/cards/TaskList';
@@ -10,15 +11,13 @@ import { careNetwork } from '../../data/mockData';
 import type { Task } from '../../types/domain';
 
 export function TasksScreen() {
+  const navigate = useNavigate();
   const { tasks, dailyReport, requestTaskConfirmation } = useCareStore();
   const [taskFeedback, setTaskFeedback] = useState('');
   const [detailTaskId, setDetailTaskId] = useState<string | null>(null);
-  const [contactTaskId, setContactTaskId] = useState<string | null>(null);
-  const [contactMessage, setContactMessage] = useState('');
 
   const caregiver = careNetwork.find((member) => member.rol.toLowerCase().includes('cuidadora'));
   const detailTask = useMemo(() => tasks.find((task) => task.id === detailTaskId) ?? null, [tasks, detailTaskId]);
-  const contactTask = useMemo(() => tasks.find((task) => task.id === contactTaskId) ?? null, [tasks, contactTaskId]);
 
   const pushFeedback = (message: string) => {
     setTaskFeedback(message);
@@ -26,44 +25,27 @@ export function TasksScreen() {
   };
 
   useEffect(() => {
-    if (!detailTask && !contactTask) return;
+    if (!detailTask) return;
 
     const onEscape = (event: KeyboardEvent) => {
       if (event.key === 'Escape') {
         setDetailTaskId(null);
-        setContactTaskId(null);
       }
     };
 
     window.addEventListener('keydown', onEscape);
     return () => window.removeEventListener('keydown', onEscape);
-  }, [detailTask, contactTask]);
+  }, [detailTask]);
 
   const openDetail = (task: Task) => {
-    setContactTaskId(null);
     setDetailTaskId(task.id);
   };
 
-  const openContact = (task: Task) => {
-    setDetailTaskId(null);
-    setContactTaskId(task.id);
-    setContactMessage(buildSuggestedMessage(task));
-  };
-
   const closeDetail = () => setDetailTaskId(null);
-  const closeContact = () => setContactTaskId(null);
 
   const handleRequestConfirmation = (task: Task) => {
     requestTaskConfirmation(task.id);
     pushFeedback(`Se solicitó confirmación a ${task.responsable}`);
-  };
-
-  const handleSendMessage = () => {
-    if (!contactTask || !contactMessage.trim()) return;
-
-    pushFeedback(`Mensaje enviado a ${contactTask.responsable}`);
-    setContactTaskId(null);
-    setContactMessage('');
   };
 
   return (
@@ -76,7 +58,14 @@ export function TasksScreen() {
           tasks={tasks}
           onRequestConfirmation={handleRequestConfirmation}
           onViewDetail={openDetail}
-          onContactCaregiver={openContact}
+          onContactCaregiver={(task) =>
+            navigate('/messages', {
+              state: {
+                conversation: task.responsable,
+                compose: true,
+              },
+            })
+          }
         />
       </div>
 
@@ -153,46 +142,6 @@ export function TasksScreen() {
           </div>
         </div>
       ) : null}
-
-      {contactTask ? (
-        <div className="activity-modal-backdrop" role="presentation" onClick={closeContact}>
-          <div
-            className="activity-modal-sheet task-modal-sheet"
-            role="dialog"
-            aria-modal="true"
-            aria-labelledby="contactar-cuidador-titulo"
-            onClick={(event) => event.stopPropagation()}
-          >
-            <div className="activity-modal-sheet__handle" aria-hidden="true" />
-            <h4 id="contactar-cuidador-titulo" className="activity-modal-sheet__title">
-              {`Contactar a ${contactTask.responsable}`}
-            </h4>
-
-            <p className="task-modal-sheet__helper">
-              Enviá un mensaje a la cuidadora responsable de esta tarea.
-            </p>
-
-            <label className="field">
-              <span className="field__label">Mensaje</span>
-              <textarea
-                className="field__textarea"
-                rows={4}
-                value={contactMessage}
-                onChange={(event) => setContactMessage(event.target.value)}
-              />
-            </label>
-
-            <div className="task-modal-sheet__actions">
-              <Button type="button" fullWidth onClick={handleSendMessage} disabled={!contactMessage.trim()}>
-                Enviar mensaje
-              </Button>
-              <Button type="button" variant="secondary" fullWidth onClick={closeContact}>
-                Cancelar
-              </Button>
-            </div>
-          </div>
-        </div>
-      ) : null}
     </section>
   );
 }
@@ -221,12 +170,4 @@ function getStatusUpdateText(task: Task) {
   if (task.estado === 'confirmada') return 'Confirmada por la cuidadora.';
   if (task.estado === 'pendiente') return 'Solicitud de confirmación enviada a la cuidadora.';
   return 'Aún no confirmada por la cuidadora.';
-}
-
-function buildSuggestedMessage(task: Task) {
-  if (task.titulo.toLowerCase().includes('medicación de la mañana')) {
-    return `Hola ${task.responsable}, ¿me podrías confirmar si Juan ya tomó la medicación de la mañana?`;
-  }
-
-  return `Hola ${task.responsable}, ¿me podrías confirmar el estado de la tarea “${task.titulo}”?`;
 }

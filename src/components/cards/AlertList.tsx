@@ -21,9 +21,16 @@ export function AlertList({
   return (
     <div className="stack-sm">
       {alerts.map((alert) => (
-        <Card key={alert.id} className="list-card alert-card">
+        <Card key={alert.id} className={`list-card alert-card ${severityCardClass(alert.severidad)}`}>
           <div className="list-card__row">
-            <p className="list-card__title">{alert.titulo}</p>
+            <div className="alert-card__title-wrap">
+              {alert.severidad === 'alta' ? (
+                <span className="alert-card__urgency-icon" aria-hidden="true">
+                  !
+                </span>
+              ) : null}
+              <p className="list-card__title">{alert.titulo}</p>
+            </div>
             <Badge variant={severityToVariant(alert.severidad)}>{capitalize(alert.severidad)}</Badge>
           </div>
           <p className="alert-card__description">{alert.descripcion}</p>
@@ -62,6 +69,12 @@ function severityToVariant(severity: Alert['severidad']) {
   if (severity === 'alta') return 'danger';
   if (severity === 'media') return 'warning';
   return 'neutral';
+}
+
+function severityCardClass(severity: Alert['severidad']) {
+  if (severity === 'alta') return 'alert-card--alta';
+  if (severity === 'media') return 'alert-card--media';
+  return 'alert-card--baja';
 }
 
 function capitalize(value: string) {

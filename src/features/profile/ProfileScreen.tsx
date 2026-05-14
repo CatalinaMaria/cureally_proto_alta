@@ -25,7 +25,7 @@ export function ProfileScreen() {
       <CareNetworkCard members={careNetwork} />
       <ProfileActionCard title="Historial médico" description="Resumen de consultas, medicaciones y controles." />
       <ProfileActionCard title="Información general" description="Datos de contacto, dirección y rutinas importantes." />
-      <ProfileActionCard title="Red de cuidado" description="Roles y coordinación entre familiares y cuidadores." />
+      <ProfileActionCard title="Gestionar red de cuidado" description="Roles y coordinación entre familiares y cuidadores." />
       <Button variant="danger" fullWidth onClick={handleLogout}>
         Cerrar sesión
       </Button>

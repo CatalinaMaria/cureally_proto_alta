@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useCareStore } from '../../app/care-store';
 import { AlertList } from '../../components/cards/AlertList';
@@ -6,19 +6,15 @@ import { SectionTitle } from '../../components/feedback/SectionTitle';
 import { Button } from '../../components/forms/Button';
 import { ScreenHeader } from '../../components/layout/ScreenHeader';
 import { careNetwork } from '../../data/mockData';
-import type { Alert } from '../../types/domain';
 
 export function AlertsScreen() {
   const navigate = useNavigate();
   const { alerts, dailyReport } = useCareStore();
   const [feedback, setFeedback] = useState('');
-  const [contactAlertId, setContactAlertId] = useState<string | null>(null);
   const [isReportOpen, setIsReportOpen] = useState(false);
-  const [contactMessage, setContactMessage] = useState('');
 
   const caregiver = careNetwork.find((member) => member.rol.toLowerCase().includes('cuidadora'));
   const caregiverName = caregiver?.nombre ?? 'Carolina';
-  const contactAlert = useMemo(() => alerts.find((alert) => alert.id === contactAlertId) ?? null, [alerts, contactAlertId]);
 
   const pushFeedback = (message: string) => {
     setFeedback(message);
@@ -26,44 +22,24 @@ export function AlertsScreen() {
   };
 
   useEffect(() => {
-    if (!contactAlert && !isReportOpen) return;
+    if (!isReportOpen) return;
 
     const onEscape = (event: KeyboardEvent) => {
       if (event.key === 'Escape') {
-        setContactAlertId(null);
         setIsReportOpen(false);
       }
     };
 
     window.addEventListener('keydown', onEscape);
     return () => window.removeEventListener('keydown', onEscape);
-  }, [contactAlert, isReportOpen]);
-
-  const openContactSheet = (alert: Alert) => {
-    setIsReportOpen(false);
-    setContactAlertId(alert.id);
-    setContactMessage(buildSuggestedMessage(alert, caregiverName));
-  };
-
-  const closeContactSheet = () => {
-    setContactAlertId(null);
-  };
+  }, [isReportOpen]);
 
   const openReportSheet = () => {
-    setContactAlertId(null);
     setIsReportOpen(true);
   };
 
   const closeReportSheet = () => {
     setIsReportOpen(false);
-  };
-
-  const handleSendMessage = () => {
-    if (!contactMessage.trim()) return;
-
-    pushFeedback(`Mensaje enviado a ${caregiverName}`);
-    closeContactSheet();
-    setContactMessage('');
   };
 
   return (
@@ -74,7 +50,14 @@ export function AlertsScreen() {
       <AlertList
         alerts={alerts}
         onRequestConfirmation={() => pushFeedback('Solicitud enviada a Carolina')}
-        onContactCaregiver={openContactSheet}
+        onContactCaregiver={() =>
+          navigate('/messages', {
+            state: {
+              conversation: caregiverName,
+              compose: true,
+            },
+          })
+        }
         onViewCalendar={() => navigate('/calendar')}
         onViewReport={openReportSheet}
       />
@@ -83,44 +66,6 @@ export function AlertsScreen() {
         <p className="alerts-feedback" role="status" aria-live="polite">
           {feedback}
         </p>
-      ) : null}
-
-      {contactAlert ? (
-        <div className="activity-modal-backdrop" role="presentation" onClick={closeContactSheet}>
-          <div
-            className="activity-modal-sheet task-modal-sheet"
-            role="dialog"
-            aria-modal="true"
-            aria-labelledby="contactar-cuidadora-alerta"
-            onClick={(event) => event.stopPropagation()}
-          >
-            <div className="activity-modal-sheet__handle" aria-hidden="true" />
-            <h4 id="contactar-cuidadora-alerta" className="activity-modal-sheet__title">
-              {`Contactar a ${caregiverName}`}
-            </h4>
-
-            <p className="task-modal-sheet__helper">Enviá un mensaje a la cuidadora responsable de esta alerta.</p>
-
-            <label className="field">
-              <span className="field__label">Mensaje</span>
-              <textarea
-                className="field__textarea"
-                rows={4}
-                value={contactMessage}
-                onChange={(event) => setContactMessage(event.target.value)}
-              />
-            </label>
-
-            <div className="task-modal-sheet__actions">
-              <Button type="button" fullWidth onClick={handleSendMessage} disabled={!contactMessage.trim()}>
-                Enviar mensaje
-              </Button>
-              <Button type="button" variant="secondary" fullWidth onClick={closeContactSheet}>
-                Cancelar
-              </Button>
-            </div>
-          </div>
-        </div>
       ) : null}
 
       {isReportOpen ? (
@@ -156,14 +101,6 @@ export function AlertsScreen() {
       ) : null}
     </section>
   );
-}
-
-function buildSuggestedMessage(alert: Alert, caregiverName: string) {
-  if (alert.tipo === 'falta_confirmacion') {
-    return `Hola ${caregiverName}, ¿me podrías confirmar si Juan ya tomó la medicación de la mañana?`;
-  }
-
-  return `Hola ${caregiverName}, ¿me podés compartir una actualización sobre “${alert.titulo}”?`;
 }
 
 function formatDate(dateIso: string) {

@@ -5,7 +5,6 @@ import { careNetwork, caregiverName } from '../../data/mockData';
 import { ActivityList } from '../../components/cards/ActivityList';
 import { Card } from '../../components/cards/Card';
 import { EstadoHoyCard } from '../../components/cards/EstadoHoyCard';
-import { ProximaActividadCard } from '../../components/cards/ProximaActividadCard';
 import { QuickAccessGrid, type QuickAccessItem } from '../../components/cards/QuickAccessGrid';
 import { SectionTitle } from '../../components/feedback/SectionTitle';
 import { ScreenHeader } from '../../components/layout/ScreenHeader';
@@ -99,13 +98,6 @@ export function HomeScreen() {
         proximaActividad={todayActivities[0]?.titulo ?? 'Sin actividades'}
       />
 
-      <ProximaActividadCard
-        key={nextActivity?.id ?? 'empty-next-activity'}
-        activity={todayActivities[0] ?? null}
-        responsiblePerson={careCoordinator ? `${careCoordinator.nombre}, ${careCoordinator.rol.toLowerCase()}` : 'Equipo de cuidado'}
-        onOpenCalendar={() => navigate('/calendar')}
-      />
-
       <section className="home-section">
         <SectionTitle title="Accesos rápidos" />
         <QuickAccessGrid items={quickLinks} />
@@ -113,7 +105,13 @@ export function HomeScreen() {
 
       <section className="home-section">
         <SectionTitle title="Próximas actividades" />
-        <ActivityList activities={todayActivities} emptyMessage="No hay actividades para hoy." />
+        <ActivityList
+          activities={todayActivities}
+          emptyMessage="No hay actividades para hoy."
+          enableDetail
+          responsiblePerson={careCoordinator ? `${careCoordinator.nombre}, ${careCoordinator.rol.toLowerCase()}` : 'Equipo de cuidado'}
+          onOpenCalendar={() => navigate('/calendar')}
+        />
       </section>
     </section>
   );

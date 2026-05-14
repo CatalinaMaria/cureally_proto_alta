@@ -1,6 +1,6 @@
 import type { SVGProps } from 'react';
 
-export type AppIconName = 'home' | 'tasks' | 'alerts' | 'calendar' | 'profile';
+export type AppIconName = 'home' | 'tasks' | 'messages' | 'alerts' | 'calendar' | 'profile';
 
 interface AppIconProps extends SVGProps<SVGSVGElement> {
   name: AppIconName;
@@ -30,6 +30,13 @@ export function AppIcon({ name, ...props }: AppIconProps) {
           <path d="M9 9h6" />
           <path d="M9 13h3" />
           <path d="M14.5 13.5l1.5 1.5 3-3" />
+        </>
+      ) : null}
+      {name === 'messages' ? (
+        <>
+          <path d="M5 6.5h14a2 2 0 012 2v7a2 2 0 01-2 2h-8l-4 3v-3H5a2 2 0 01-2-2v-7a2 2 0 012-2z" />
+          <path d="M8 10h8" />
+          <path d="M8 13h5" />
         </>
       ) : null}
       {name === 'alerts' ? (

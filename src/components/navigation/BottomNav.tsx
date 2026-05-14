@@ -3,7 +3,7 @@ import { AppIcon, type AppIconName } from '../feedback/AppIcon';
 
 const navItems = [
   { to: '/home', label: 'Inicio', icon: 'home' as AppIconName },
-  { to: '/tasks', label: 'Tareas', icon: 'tasks' as AppIconName },
+  { to: '/messages', label: 'Mensajes', icon: 'messages' as AppIconName },
   { to: '/alerts', label: 'Alertas', icon: 'alerts' as AppIconName },
   { to: '/profile', label: 'Perfil', icon: 'profile' as AppIconName },
 ];
