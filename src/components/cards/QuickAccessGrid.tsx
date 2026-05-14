@@ -1,10 +1,12 @@
 import { type KeyboardEvent } from 'react';
+import { AppIcon, type AppIconName } from '../feedback/AppIcon';
 import { Card } from './Card';
 
 export interface QuickAccessItem {
   id: string;
   titulo: string;
   descripcion: string;
+  icon: AppIconName;
   onSelect: () => void;
 }
 
@@ -32,6 +34,9 @@ export function QuickAccessGrid({ items }: QuickAccessGridProps) {
             className="quick-card"
             aria-label={`Ir a ${item.titulo}`}
           >
+            <span className="quick-card__icon" aria-hidden="true">
+              <AppIcon name={item.icon} width={16} height={16} />
+            </span>
             <p className="quick-card__title">{item.titulo}</p>
             <p className="quick-card__description">{item.descripcion}</p>
           </div>

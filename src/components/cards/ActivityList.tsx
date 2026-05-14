@@ -14,20 +14,24 @@ export function ActivityList({ activities, emptyMessage = 'No hay actividades re
 
   return (
     <div className="stack-sm">
-      {activities.map((activity) => (
-        <Card key={activity.id} className="list-card">
-          <div className="list-card__row">
-            <p className="list-card__title">{activity.titulo}</p>
-            <p className="list-card__time">{formatHour(activity.hora)}</p>
-          </div>
-          <div className="list-card__row">
-            <Badge variant={activity.estado === 'completada' ? 'success' : 'warning'}>
-              {activity.estado === 'completada' ? 'Completada' : 'Pendiente'}
-            </Badge>
-            <span className="muted-text">{formatCategory(activity.categoria)}</span>
-          </div>
-        </Card>
-      ))}
+      {activities.map((activity) => {
+        const recurrence = formatRecurrence(activity);
+        return (
+          <Card key={activity.id} className="list-card">
+            <div className="list-card__row">
+              <p className="list-card__title">{activity.titulo}</p>
+              <p className="list-card__time">{formatHour(activity.hora)}</p>
+            </div>
+            <div className="list-card__row">
+              <Badge variant={activity.estado === 'completada' ? 'success' : 'warning'}>
+                {activity.estado === 'completada' ? 'Completada' : 'Pendiente'}
+              </Badge>
+              <span className="muted-text">{formatCategory(activity.categoria)}</span>
+            </div>
+            {recurrence ? <p className="list-card__meta">{recurrence}</p> : null}
+          </Card>
+        );
+      })}
     </div>
   );
 }
@@ -43,4 +47,33 @@ function formatCategory(category: Activity['categoria']) {
   if (category === 'medicacion') return 'Medicación';
   if (category === 'consulta') return 'Consulta';
   return 'Tarea';
+}
+
+function formatRecurrence(activity: Activity) {
+  if (activity.repeticion === 'todos_los_dias') {
+    if (activity.duracion === 'hasta_fecha' && activity.fechaFinalizacion) {
+      return `Diaria · hasta ${formatShortDate(activity.fechaFinalizacion)}`;
+    }
+    return 'Diaria · indefinida';
+  }
+
+  if (activity.repeticion === 'semanal') {
+    if (activity.duracion === 'hasta_fecha' && activity.fechaFinalizacion) {
+      return `Semanal · hasta ${formatShortDate(activity.fechaFinalizacion)}`;
+    }
+    return 'Semanal · indefinida';
+  }
+
+  if (activity.repeticion === 'personalizado') {
+    return 'Repetición personalizada';
+  }
+
+  return null;
+}
+
+function formatShortDate(dateIso: string) {
+  return new Intl.DateTimeFormat('es-AR', {
+    day: '2-digit',
+    month: '2-digit',
+  }).format(new Date(`${dateIso}T00:00:00`));
 }

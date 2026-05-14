@@ -12,7 +12,6 @@ export function CalendarMonthGrid({ year, month, selectedDate, onSelectDate, has
   const daysInMonth = new Date(year, month + 1, 0).getDate();
   const firstDay = new Date(year, month, 1).getDay();
   const offset = (firstDay + 6) % 7;
-  const selectedDay = Number(selectedDate.slice(-2));
 
   const cells = Array.from({ length: 42 }, (_, index) => {
     const dayNumber = index - offset + 1;
@@ -21,7 +20,7 @@ export function CalendarMonthGrid({ year, month, selectedDate, onSelectDate, has
     }
 
     const dateIso = `${year}-${String(month + 1).padStart(2, '0')}-${String(dayNumber).padStart(2, '0')}`;
-    const isSelected = dayNumber === selectedDay;
+    const isSelected = dateIso === selectedDate;
 
     return (
       <button

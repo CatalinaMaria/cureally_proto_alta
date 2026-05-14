@@ -19,6 +19,8 @@ export interface CareMember {
 
 export type ActivityCategory = 'medicacion' | 'consulta' | 'tarea';
 export type ActivityStatus = 'pendiente' | 'completada';
+export type ActivityRecurrence = 'una_vez' | 'todos_los_dias' | 'semanal' | 'personalizado';
+export type ActivityDuration = 'indefinida' | 'hasta_fecha';
 
 export interface Activity {
   id: string;
@@ -27,6 +29,11 @@ export interface Activity {
   titulo: string;
   categoria: ActivityCategory;
   estado: ActivityStatus;
+  responsable?: string;
+  nota?: string;
+  repeticion?: ActivityRecurrence;
+  duracion?: ActivityDuration;
+  fechaFinalizacion?: string;
 }
 
 export type TaskStatus = 'pendiente' | 'completada';

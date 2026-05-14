@@ -12,15 +12,15 @@ export function EstadoHoyCard({ pendientes, completadas, alertasActivas, proxima
     <Card>
       <h3 className="card-title">Estado de hoy</h3>
       <div className="status-grid">
-        <div className="status-item">
+        <div className="status-item status-item--pending">
           <span className="status-item__value">{pendientes}</span>
           <span className="status-item__label">Pendientes</span>
         </div>
-        <div className="status-item">
+        <div className="status-item status-item--completed">
           <span className="status-item__value">{completadas}</span>
           <span className="status-item__label">Completadas</span>
         </div>
-        <div className="status-item">
+        <div className="status-item status-item--alerts">
           <span className="status-item__value">{alertasActivas}</span>
           <span className="status-item__label">Alertas activas</span>
         </div>

@@ -10,6 +10,7 @@ interface CareStoreValue {
   dailyReport: DailyReport;
   selectedDate: string;
   setSelectedDate: (date: string) => void;
+  addActivity: (activity: Omit<Activity, 'id' | 'estado'>) => void;
   toggleTaskStatus: (taskId: string) => void;
   confirmAlert: (alertId: string) => void;
   updateDailyReport: (notes: string) => void;
@@ -18,6 +19,7 @@ interface CareStoreValue {
 const CareStoreContext = createContext<CareStoreValue | null>(null);
 
 export function CareStoreProvider({ children }: { children: ReactNode }) {
+  const [activities, setActivities] = useState<Activity[]>(initialActivities);
   const [tasks, setTasks] = useState<Task[]>(initialTasks);
   const [alerts, setAlerts] = useState<Alert[]>(initialAlerts);
   const [dailyReport, setDailyReport] = useState<DailyReport>(initialDailyReport);
@@ -26,12 +28,20 @@ export function CareStoreProvider({ children }: { children: ReactNode }) {
   const value = useMemo<CareStoreValue>(
     () => ({
       patient,
-      activities: initialActivities,
+      activities,
       tasks,
       alerts,
       dailyReport,
       selectedDate,
       setSelectedDate,
+      addActivity: (activity) => {
+        const newActivity: Activity = {
+          ...activity,
+          id: `act-${Date.now()}`,
+          estado: 'pendiente',
+        };
+        setActivities((prev) => [...prev, newActivity]);
+      },
       toggleTaskStatus: (taskId) => {
         setTasks((prev) =>
           prev.map((task) =>
@@ -50,7 +60,7 @@ export function CareStoreProvider({ children }: { children: ReactNode }) {
         setDailyReport((prev) => ({ ...prev, observaciones: notes }));
       },
     }),
-    [alerts, dailyReport, selectedDate, tasks],
+    [activities, alerts, dailyReport, selectedDate, tasks],
   );
 
   return <CareStoreContext.Provider value={value}>{children}</CareStoreContext.Provider>;

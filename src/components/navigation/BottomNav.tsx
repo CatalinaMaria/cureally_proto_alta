@@ -1,10 +1,11 @@
 import { NavLink } from 'react-router-dom';
+import { AppIcon, type AppIconName } from '../feedback/AppIcon';
 
 const navItems = [
-  { to: '/home', label: 'Inicio', icon: '⌂' },
-  { to: '/tasks', label: 'Tareas', icon: '✓' },
-  { to: '/alerts', label: 'Alertas', icon: '!' },
-  { to: '/profile', label: 'Perfil', icon: '◯' },
+  { to: '/home', label: 'Inicio', icon: 'home' as AppIconName },
+  { to: '/tasks', label: 'Tareas', icon: 'tasks' as AppIconName },
+  { to: '/alerts', label: 'Alertas', icon: 'alerts' as AppIconName },
+  { to: '/profile', label: 'Perfil', icon: 'profile' as AppIconName },
 ];
 
 export function BottomNav() {
@@ -13,7 +14,7 @@ export function BottomNav() {
       {navItems.map((item) => (
         <NavLink key={item.to} to={item.to} className={({ isActive }) => `bottom-nav__item ${isActive ? 'is-active' : ''}`}>
           <span className="bottom-nav__icon" aria-hidden="true">
-            {item.icon}
+            <AppIcon name={item.icon} width={18} height={18} />
           </span>
           <span>{item.label}</span>
         </NavLink>
