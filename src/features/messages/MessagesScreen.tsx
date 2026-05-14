@@ -33,7 +33,7 @@ const INITIAL_CONVERSATIONS: Conversation[] = [
   },
   {
     id: 'conv-pedro',
-    nombre: 'Pablo',
+    nombre: 'Pedro',
     rol: 'Cuidador',
     ultimoMensaje: 'Quedo atento a la consulta de la tarde.',
     hora: 'Hace 1 h',
@@ -66,7 +66,7 @@ const INITIAL_THREADS: Record<string, ConversationMessage[]> = {
     {
       id: 'p-msg-1',
       remitente: 'maria',
-      texto: 'Pablo, ¿podés confirmar si ya está listo el traslado para la consulta?',
+      texto: 'Pedro, ¿podés confirmar si ya está listo el traslado para la consulta?',
       hora: '09:12',
     },
     {
