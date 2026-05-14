@@ -5,25 +5,46 @@ import { Card } from './Card';
 
 interface TaskListProps {
   tasks: Task[];
-  onToggle: (taskId: string) => void;
+  onRequestConfirmation: (task: Task) => void;
+  onViewDetail: (task: Task) => void;
+  onContactCaregiver: (task: Task) => void;
 }
 
-export function TaskList({ tasks, onToggle }: TaskListProps) {
+export function TaskList({ tasks, onRequestConfirmation, onViewDetail, onContactCaregiver }: TaskListProps) {
   return (
     <div className="stack-sm">
       {tasks.map((task) => (
-        <Card key={task.id} className="list-card">
+        <Card key={task.id} className="list-card task-card">
           <div className="list-card__row">
             <p className="list-card__title">{task.titulo}</p>
-            <Badge variant={task.estado === 'completada' ? 'success' : 'warning'}>
-              {task.estado === 'completada' ? 'Completada' : 'Pendiente'}
+            <Badge variant={getBadgeVariant(task.estado)}>
+              {formatTaskStatus(task.estado)}
             </Badge>
           </div>
-          <div className="list-card__row">
-            <span className="muted-text">Franja: {formatShift(task.franja)}</span>
-            <Button variant="secondary" onClick={() => onToggle(task.id)}>
-              {task.estado === 'completada' ? 'Marcar pendiente' : 'Marcar completada'}
+          <p className="list-card__meta">{formatTaskTiming(task)}</p>
+          <p className="list-card__meta">Responsable: {task.responsable}</p>
+
+          <div className="task-card__actions">
+            <Button
+              variant="secondary"
+              className="task-card__request"
+              onClick={() => onRequestConfirmation(task)}
+              disabled={task.estado === 'confirmada' || task.estado === 'pendiente'}
+            >
+              {task.estado === 'confirmada'
+                ? 'Confirmada por cuidadora'
+                : task.estado === 'pendiente'
+                  ? 'Confirmación solicitada'
+                  : 'Solicitar confirmación'}
             </Button>
+            <div className="task-card__links">
+              <button type="button" className="text-button" onClick={() => onViewDetail(task)}>
+                Ver detalle
+              </button>
+              <button type="button" className="text-button" onClick={() => onContactCaregiver(task)}>
+                Contactar cuidador
+              </button>
+            </div>
           </div>
         </Card>
       ))}
@@ -31,9 +52,25 @@ export function TaskList({ tasks, onToggle }: TaskListProps) {
   );
 }
 
-function formatShift(shift?: Task['franja']) {
-  if (shift === 'manana') return 'Mañana';
-  if (shift === 'tarde') return 'Tarde';
-  if (shift === 'noche') return 'Noche';
-  return 'General';
+function formatTaskTiming(task: Task) {
+  if (task.hora) {
+    return `Hora: ${task.hora}`;
+  }
+
+  if (task.franja === 'manana') return 'Franja: Mañana';
+  if (task.franja === 'tarde') return 'Franja: Tarde';
+  if (task.franja === 'noche') return 'Franja: Noche';
+  return 'Franja: General';
+}
+
+function formatTaskStatus(status: Task['estado']) {
+  if (status === 'confirmada') return 'Confirmada';
+  if (status === 'pendiente') return 'Pendiente';
+  return 'Sin confirmar';
+}
+
+function getBadgeVariant(status: Task['estado']) {
+  if (status === 'confirmada') return 'success';
+  if (status === 'pendiente') return 'neutral';
+  return 'warning';
 }

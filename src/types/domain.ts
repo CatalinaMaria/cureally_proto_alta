@@ -36,14 +36,18 @@ export interface Activity {
   fechaFinalizacion?: string;
 }
 
-export type TaskStatus = 'pendiente' | 'completada';
+export type TaskStatus = 'sin_confirmar' | 'confirmada' | 'pendiente';
 export type TaskShift = 'manana' | 'tarde' | 'noche';
 
 export interface Task {
   id: string;
   titulo: string;
   estado: TaskStatus;
+  responsable: string;
   franja?: TaskShift;
+  hora?: string;
+  descripcion?: string;
+  ultimaActualizacion?: string;
 }
 
 export type AlertSeverity = 'alta' | 'media' | 'baja';

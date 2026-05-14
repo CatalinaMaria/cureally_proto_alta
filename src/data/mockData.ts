@@ -65,9 +65,33 @@ export const initialActivities: Activity[] = [
 ];
 
 export const initialTasks: Task[] = [
-  { id: 'task-1', titulo: 'Dar medicación de la mañana', estado: 'pendiente', franja: 'manana' },
-  { id: 'task-2', titulo: 'Acompañar a consulta médica', estado: 'pendiente', franja: 'tarde' },
-  { id: 'task-3', titulo: 'Preparar almuerzo', estado: 'completada', franja: 'tarde' },
+  {
+    id: 'task-1',
+    titulo: 'Dar medicación de la mañana',
+    estado: 'sin_confirmar',
+    franja: 'manana',
+    responsable: 'Carolina',
+    descripcion: 'Administrar la medicación indicada luego del desayuno.',
+    ultimaActualizacion: 'Aún no confirmada por la cuidadora.',
+  },
+  {
+    id: 'task-2',
+    titulo: 'Acompañar a consulta médica',
+    estado: 'pendiente',
+    franja: 'tarde',
+    responsable: 'Carolina',
+    descripcion: 'Coordinar traslado y acompañamiento para el control médico de la tarde.',
+    ultimaActualizacion: 'Se solicitó confirmación a la cuidadora.',
+  },
+  {
+    id: 'task-3',
+    titulo: 'Preparar almuerzo',
+    estado: 'confirmada',
+    franja: 'tarde',
+    responsable: 'Carolina',
+    descripcion: 'Preparar un almuerzo liviano según las recomendaciones médicas.',
+    ultimaActualizacion: 'Confirmada por la cuidadora a las 12:10 PM.',
+  },
 ];
 
 export const initialAlerts: Alert[] = [

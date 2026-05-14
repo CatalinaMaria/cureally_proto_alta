@@ -775,6 +775,71 @@
   font-size: var(--size-12);
 }
 
+.task-card {
+  gap: var(--space-2);
+}
+
+.task-card__actions {
+  margin-top: var(--space-1);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+.task-card__request {
+  width: 100%;
+}
+
+.task-card__links {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-3);
+}
+
+.tasks-feedback {
+  margin: 0;
+  color: var(--accent-strong);
+  font-size: var(--size-12);
+  line-height: 1.4;
+}
+
+.task-modal-sheet {
+  border-radius: 18px 18px 14px 14px;
+}
+
+.task-modal-sheet__status {
+  margin-top: var(--space-3);
+}
+
+.task-modal-sheet__label {
+  margin: var(--space-3) 0 var(--space-1);
+  color: var(--text-secondary);
+  font-size: var(--size-12);
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+}
+
+.task-modal-sheet__text {
+  margin: 0;
+  color: var(--text-primary);
+  line-height: 1.5;
+}
+
+.task-modal-sheet__helper {
+  margin: var(--space-2) 0 0;
+  color: var(--text-secondary);
+  font-size: var(--size-12);
+  line-height: 1.5;
+}
+
+.task-modal-sheet__actions {
+  margin-top: var(--space-4);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
 .badge {
   border-radius: 999px;
   padding: 3px 10px;
@@ -860,6 +925,21 @@
 
 .check-list__item {
   color: var(--text-secondary);
+}
+
+.daily-report-card__notes {
+  margin: var(--space-3) 0 0;
+  padding: var(--space-3);
+  border-radius: var(--radius-sm);
+  border: 1px solid #d8e6ec;
+  background: #f8fcff;
+  color: var(--text-primary);
+  line-height: 1.5;
+}
+
+.daily-report-card__action {
+  margin-top: var(--space-3);
+  width: 100%;
 }
 
 .info-list {

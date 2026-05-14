@@ -20,8 +20,8 @@ export function HomeScreen() {
     [activities],
   );
 
-  const pendingTasks = tasks.filter((task) => task.estado === 'pendiente').length;
-  const completedTasks = tasks.filter((task) => task.estado === 'completada').length;
+  const pendingTasks = tasks.filter((task) => task.estado === 'sin_confirmar' || task.estado === 'pendiente').length;
+  const completedTasks = tasks.filter((task) => task.estado === 'confirmada').length;
   const activeAlerts = alerts.filter((alert) => !alert.confirmada).length;
   const nextActivity = todayActivities[0] ?? null;
   const careCoordinator = careNetwork.find((member) => member.rol.toLowerCase().includes('cuidadora'));

@@ -1,27 +1,20 @@
+import { Button } from '../forms/Button';
 import { Card } from './Card';
 
 interface DailyReportCardProps {
+  cuidador: string;
   fecha: string;
   observaciones: string;
   checks: string[];
-  onUpdate: (notes: string) => void;
+  onViewReport?: () => void;
 }
 
-export function DailyReportCard({ fecha, observaciones, checks, onUpdate }: DailyReportCardProps) {
+export function DailyReportCard({ cuidador, fecha, observaciones, checks, onViewReport }: DailyReportCardProps) {
   return (
-    <Card>
-      <h3 className="card-title">Informe diario del cuidador</h3>
+    <Card className="daily-report-card">
+      <h3 className="card-title">{`Informe diario de ${cuidador}`}</h3>
       <p className="muted-text">Fecha: {formatDate(fecha)}</p>
-      <label className="field">
-        <span className="field__label">Observaciones</span>
-        <textarea
-          className="field__textarea"
-          value={observaciones}
-          onChange={(event) => onUpdate(event.target.value)}
-          placeholder="Escribí las observaciones del día"
-          rows={4}
-        />
-      </label>
+      <p className="daily-report-card__notes">{observaciones}</p>
       <div className="check-list" aria-label="Checklist diario">
         {checks.map((check) => (
           <p key={check} className="check-list__item">
@@ -29,6 +22,11 @@ export function DailyReportCard({ fecha, observaciones, checks, onUpdate }: Dail
           </p>
         ))}
       </div>
+      {onViewReport ? (
+        <Button type="button" variant="ghost" className="daily-report-card__action" onClick={onViewReport}>
+          Ver informe completo
+        </Button>
+      ) : null}
     </Card>
   );
 }
