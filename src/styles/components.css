@@ -55,6 +55,64 @@
   font-weight: 700;
 }
 
+.public-screen--welcome {
+  justify-content: space-between;
+  gap: var(--space-5);
+  padding-top: clamp(var(--space-7), 12vh, 88px);
+  padding-bottom: clamp(var(--space-6), 8vh, 64px);
+  background: radial-gradient(120% 68% at 50% -6%, #eaf7f5 0%, transparent 62%);
+}
+
+.welcome-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: var(--space-4);
+  padding: var(--space-6) var(--space-4);
+  border-radius: 20px;
+  border: 1px solid #d8e4e3;
+  background: linear-gradient(180deg, #fffefb 0%, #fffaf3 100%);
+  box-shadow: var(--shadow-soft);
+}
+
+.welcome-logo-shell {
+  width: clamp(154px, 50vw, 220px);
+  aspect-ratio: 1 / 1;
+  border-radius: 999px;
+  display: grid;
+  place-items: center;
+  background: linear-gradient(160deg, #f4f9f8 0%, #e9efee 100%);
+  border: 1px solid #d1e6e3;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.72);
+}
+
+.welcome-logo-image {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+.welcome-brand-name {
+  font-size: var(--size-24);
+  letter-spacing: -0.02em;
+  color: var(--accent-strong);
+}
+
+.public-screen--welcome h1 {
+  text-align: center;
+  line-height: 1.22;
+}
+
+.welcome-subtitle {
+  text-align: center;
+  max-width: 28ch;
+}
+
+.welcome-cta {
+  margin-top: var(--space-1);
+}
+
 .app-shell {
   min-height: calc(100vh - 72px);
   display: flex;
