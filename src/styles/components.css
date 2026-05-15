@@ -1169,6 +1169,11 @@
   gap: var(--space-3);
 }
 
+.conversation-card--group {
+  background: linear-gradient(145deg, #eef8f6 0%, #e8f5f3 100%);
+  border: 1.5px solid #b7ddd8;
+}
+
 .conversation-card__head {
   display: flex;
   align-items: flex-start;
@@ -1241,6 +1246,43 @@
   font-weight: 600;
 }
 
+.messages-chat-page {
+  flex: 1;
+  min-height: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  overflow: hidden;
+}
+
+.messages-chat-thread {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  padding-right: 2px;
+  padding-bottom: var(--space-1);
+}
+
+.messages-chat-composer {
+  margin-top: auto;
+  position: sticky;
+  bottom: 0;
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding-top: var(--space-2);
+  padding-bottom: calc(var(--space-1) + env(safe-area-inset-bottom, 0px));
+  background: var(--bg-canvas);
+}
+
+.messages-chat-composer .field__input {
+  flex: 1;
+}
+
 .messages-feedback {
   margin: 0;
   color: var(--accent-strong);
@@ -1275,6 +1317,13 @@
   margin-top: 4px;
   font-size: 11px;
   color: var(--text-secondary);
+}
+
+.message-bubble__sender {
+  margin: 0 0 4px;
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--accent-strong);
 }
 
 .message-bubble--maria {
@@ -1431,6 +1480,74 @@
   gap: var(--space-3);
   border-bottom: 1px solid var(--border-soft);
   padding-bottom: var(--space-2);
+}
+
+.important-contacts-list {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+
+.important-contacts-list li {
+  display: flex;
+  justify-content: space-between;
+  gap: var(--space-3);
+  border-bottom: 1px solid var(--border-soft);
+  padding-bottom: var(--space-2);
+}
+
+.important-contacts__button {
+  margin-top: var(--space-3);
+}
+
+.contacts-sheet {
+  max-height: 80vh;
+  overflow-y: auto;
+  padding-inline: var(--space-1);
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+.contacts-sheet::-webkit-scrollbar {
+  display: none;
+  width: 0;
+  height: 0;
+}
+
+.contacts-sheet__list {
+  margin-top: var(--space-3);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+.contacts-sheet__item {
+  border: 1px solid var(--border-soft);
+  border-radius: var(--radius-sm);
+  background: var(--bg-surface);
+  padding: var(--space-3);
+}
+
+.contacts-sheet__name {
+  margin: 0;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.contacts-sheet__actions {
+  margin-top: var(--space-2);
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  flex-wrap: wrap;
+}
+
+.profile-feedback {
+  margin: var(--space-3) 0 0;
+  color: var(--accent-strong);
+  font-size: var(--size-12);
+  line-height: 1.4;
 }
 
 .profile-action-card__title {
