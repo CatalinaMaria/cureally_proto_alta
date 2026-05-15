@@ -8,6 +8,7 @@ import { EstadoHoyCard } from '../../components/cards/EstadoHoyCard';
 import { QuickAccessGrid, type QuickAccessItem } from '../../components/cards/QuickAccessGrid';
 import { SectionTitle } from '../../components/feedback/SectionTitle';
 import { ScreenHeader } from '../../components/layout/ScreenHeader';
+import juanAvatar from '../../assets/juan-perez-avatar.png';
 
 export function HomeScreen() {
   const navigate = useNavigate();
@@ -62,12 +63,8 @@ export function HomeScreen() {
 
       <Card className="home-patient-card">
         <div className="home-patient-card__head">
-          <div className="home-patient-card__avatar" aria-hidden="true">
-            {patient.nombre
-              .split(' ')
-              .map((name) => name[0])
-              .join('')
-              .slice(0, 2)}
+          <div className="home-patient-card__avatar">
+            <img className="home-patient-card__avatar-image" src={juanAvatar} alt={`Foto de ${patient.nombre}`} />
           </div>
           <button type="button" className="text-button home-patient-card__profile-action" onClick={() => navigate('/profile')}>
             Ver perfil →
