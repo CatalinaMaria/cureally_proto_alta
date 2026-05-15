@@ -137,8 +137,18 @@
   flex: 1;
   min-height: 0;
   overflow-y: auto;
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+  scroll-behavior: smooth;
+  -webkit-overflow-scrolling: touch;
   padding: var(--space-5);
   padding-bottom: var(--space-4);
+}
+
+.app-shell__content::-webkit-scrollbar {
+  display: none;
+  width: 0;
+  height: 0;
 }
 
 .patient-strip {
@@ -963,6 +973,26 @@
   color: #4b8d86;
 }
 
+.report-card {
+  gap: var(--space-2);
+}
+
+.report-card__preview {
+  margin: 0;
+  color: var(--text-secondary);
+  line-height: 1.5;
+}
+
+.report-card__actions {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.report-card__detail-link {
+  font-size: var(--size-12);
+  font-weight: 600;
+}
+
 .task-card {
   gap: var(--space-2);
 }
@@ -1104,6 +1134,20 @@
   display: flex;
   flex-direction: column;
   gap: var(--space-2);
+}
+
+.reports-sheet {
+  max-height: 80vh;
+  overflow-y: auto;
+  padding-right: 2px;
+}
+
+.report-sheet__label {
+  margin: var(--space-3) 0 var(--space-1);
+  color: var(--text-secondary);
+  font-size: var(--size-12);
+  letter-spacing: 0;
+  text-transform: none;
 }
 
 .messages-sheet {

@@ -1,22 +1,19 @@
 import { useEffect, useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useCareStore } from '../../app/care-store';
-import { DailyReportCard } from '../../components/cards/DailyReportCard';
 import { TaskList } from '../../components/cards/TaskList';
 import { Badge } from '../../components/feedback/Badge';
 import { SectionTitle } from '../../components/feedback/SectionTitle';
 import { Button } from '../../components/forms/Button';
 import { ScreenHeader } from '../../components/layout/ScreenHeader';
-import { careNetwork } from '../../data/mockData';
 import type { Task } from '../../types/domain';
 
 export function TasksScreen() {
   const navigate = useNavigate();
-  const { tasks, dailyReport, requestTaskConfirmation } = useCareStore();
+  const { tasks, requestTaskConfirmation } = useCareStore();
   const [taskFeedback, setTaskFeedback] = useState('');
   const [detailTaskId, setDetailTaskId] = useState<string | null>(null);
 
-  const caregiver = careNetwork.find((member) => member.rol.toLowerCase().includes('cuidadora'));
   const detailTask = useMemo(() => tasks.find((task) => task.id === detailTaskId) ?? null, [tasks, detailTaskId]);
 
   const pushFeedback = (message: string) => {
@@ -49,7 +46,7 @@ export function TasksScreen() {
   };
 
   return (
-    <section className="screen stack-lg">
+    <section className="screen stack-md">
       <ScreenHeader title="Tareas" subtitle="Revisá tareas, responsables y confirmaciones del día." />
 
       <div>
@@ -74,14 +71,6 @@ export function TasksScreen() {
           {taskFeedback}
         </p>
       ) : null}
-
-      <DailyReportCard
-        cuidador={caregiver?.nombre ?? 'Carolina'}
-        fecha={dailyReport.fecha}
-        observaciones={dailyReport.observaciones}
-        checks={dailyReport.checks}
-        onViewReport={() => pushFeedback('Abriendo informe completo')}
-      />
 
       {detailTask ? (
         <div className="activity-modal-backdrop" role="presentation" onClick={closeDetail}>

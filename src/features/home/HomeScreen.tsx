@@ -48,11 +48,11 @@ export function HomeScreen() {
       onSelect: () => navigate('/alerts'),
     },
     {
-      id: 'quick-profile',
-      titulo: 'Perfil',
-      descripcion: 'Datos y red de cuidado',
-      icon: 'profile',
-      onSelect: () => navigate('/profile'),
+      id: 'quick-reports',
+      titulo: 'Informes',
+      descripcion: 'Revisar historial diario',
+      icon: 'reports',
+      onSelect: () => navigate('/reports'),
     },
   ];
 

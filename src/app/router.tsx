@@ -9,6 +9,7 @@ import { TasksScreen } from '../features/tasks/TasksScreen';
 import { AlertsScreen } from '../features/alerts/AlertsScreen';
 import { ProfileScreen } from '../features/profile/ProfileScreen';
 import { MessagesScreen } from '../features/messages/MessagesScreen';
+import { ReportsScreen } from '../features/reports/ReportsScreen';
 
 export function AppRouter() {
   return (
@@ -23,6 +24,7 @@ export function AppRouter() {
           <Route path="/calendar" element={<CalendarScreen />} />
           <Route path="/tasks" element={<TasksScreen />} />
           <Route path="/alerts" element={<AlertsScreen />} />
+          <Route path="/reports" element={<ReportsScreen />} />
           <Route path="/profile" element={<ProfileScreen />} />
         </Route>
       </Route>
