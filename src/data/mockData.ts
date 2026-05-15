@@ -122,6 +122,15 @@ export const initialAlerts: Alert[] = [
     severidad: 'baja',
     confirmada: false,
   },
+  {
+    id: 'alert-4',
+    tipo: 'stock_bajo',
+    titulo: 'Stock crítico de pañales',
+    descripcion: 'Quedan 2 unidades. Se recomienda reponer hoy.',
+    hora: '10:15 AM',
+    severidad: 'alta',
+    confirmada: false,
+  },
 ];
 
 export const initialDailyReport: DailyReport = {

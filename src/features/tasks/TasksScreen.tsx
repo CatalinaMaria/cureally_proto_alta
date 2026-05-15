@@ -47,7 +47,7 @@ export function TasksScreen() {
 
   return (
     <section className="screen stack-md">
-      <ScreenHeader title="Tareas" subtitle="Revisá tareas, responsables y confirmaciones del día." />
+      <ScreenHeader title="Tareas" subtitle="Revisá tareas, responsables y confirmaciones del día." showBack backTo="/home" />
 
       <div>
         <SectionTitle title="Tareas asignadas" />

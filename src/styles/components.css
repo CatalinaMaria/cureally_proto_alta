@@ -504,12 +504,37 @@
 }
 
 .icon-button {
-  width: 32px;
-  height: 32px;
+  width: 34px;
+  height: 34px;
   border-radius: 999px;
   border: 1px solid var(--border-soft);
-  background: var(--bg-surface);
+  background: #fffefb;
   cursor: pointer;
+  display: grid;
+  place-items: center;
+  color: var(--text-primary);
+}
+
+.screen-header__back-button {
+  flex-shrink: 0;
+}
+
+.screen-header__back-button svg {
+  width: 16px;
+  height: 16px;
+}
+
+.screen-header__back-button path {
+  stroke: currentColor;
+  stroke-width: 1.8;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.screen-header__back-button:hover {
+  border-color: var(--accent);
+  color: var(--accent-strong);
+  background: #f7fcfb;
 }
 
 .field {
@@ -1000,6 +1025,36 @@
 .report-card__detail-link {
   font-size: var(--size-12);
   font-weight: 600;
+}
+
+.stock-card {
+  gap: var(--space-2);
+}
+
+.stock-card--low {
+  background: linear-gradient(160deg, #fff8ea 0%, #fff5e3 100%);
+  border-color: #e2c88f;
+}
+
+.stock-card--critical {
+  background: linear-gradient(160deg, #fef1f2 0%, #fde9eb 100%);
+  border-color: #d7a2aa;
+}
+
+.stock-card--ok {
+  background: linear-gradient(160deg, #f4fbf7 0%, #eff9f4 100%);
+  border-color: #bfdcca;
+}
+
+.stock-card__actions {
+  margin-top: var(--space-1);
+}
+
+.stock-feedback {
+  margin: 0;
+  color: var(--accent-strong);
+  font-size: var(--size-12);
+  line-height: 1.4;
 }
 
 .task-card {

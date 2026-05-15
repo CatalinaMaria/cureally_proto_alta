@@ -9,6 +9,7 @@ interface AlertListProps {
   onContactCaregiver: (alert: Alert) => void;
   onViewCalendar: (alert: Alert) => void;
   onViewReport: (alert: Alert) => void;
+  onViewStock: (alert: Alert) => void;
 }
 
 export function AlertList({
@@ -17,6 +18,7 @@ export function AlertList({
   onContactCaregiver,
   onViewCalendar,
   onViewReport,
+  onViewStock,
 }: AlertListProps) {
   return (
     <div className="stack-sm">
@@ -56,6 +58,12 @@ export function AlertList({
             {alert.tipo === 'informe_nuevo' ? (
               <Button type="button" variant="secondary" onClick={() => onViewReport(alert)}>
                 Ver informe
+              </Button>
+            ) : null}
+
+            {alert.tipo === 'stock_bajo' ? (
+              <Button type="button" variant="secondary" onClick={() => onViewStock(alert)}>
+                Ver stock
               </Button>
             ) : null}
           </div>

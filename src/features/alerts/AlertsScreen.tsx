@@ -60,6 +60,7 @@ export function AlertsScreen() {
         }
         onViewCalendar={() => navigate('/calendar')}
         onViewReport={openReportSheet}
+        onViewStock={() => navigate('/stock')}
       />
 
       {feedback ? (

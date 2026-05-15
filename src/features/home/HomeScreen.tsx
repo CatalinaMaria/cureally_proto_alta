@@ -42,11 +42,11 @@ export function HomeScreen() {
       onSelect: () => navigate('/tasks'),
     },
     {
-      id: 'quick-alerts',
-      titulo: 'Alertas',
-      descripcion: 'Revisar avisos importantes',
-      icon: 'alerts',
-      onSelect: () => navigate('/alerts'),
+      id: 'quick-stock',
+      titulo: 'Stock de cuidado',
+      descripcion: 'Revisar medicación e insumos',
+      icon: 'stock',
+      onSelect: () => navigate('/stock'),
     },
     {
       id: 'quick-reports',

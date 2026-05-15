@@ -101,7 +101,7 @@ export function ReportsScreen() {
 
   return (
     <section className="screen stack-lg">
-      <ScreenHeader title="Informes" subtitle="Historial de reportes diarios de la red de cuidado." />
+      <ScreenHeader title="Informes" subtitle="Historial de reportes diarios de la red de cuidado." showBack backTo="/home" />
 
       <section>
         <SectionTitle title="Reportes recientes" />

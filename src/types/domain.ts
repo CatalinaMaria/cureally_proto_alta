@@ -51,7 +51,7 @@ export interface Task {
 }
 
 export type AlertSeverity = 'alta' | 'media' | 'baja';
-export type AlertType = 'falta_confirmacion' | 'turno_proximo' | 'informe_nuevo';
+export type AlertType = 'falta_confirmacion' | 'turno_proximo' | 'informe_nuevo' | 'stock_bajo';
 
 export interface Alert {
   id: string;

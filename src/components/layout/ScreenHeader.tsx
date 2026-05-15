@@ -23,8 +23,11 @@ export function ScreenHeader({
     <header className="screen-header">
       <div className="screen-header__main">
         {showBack ? (
-          <button className="icon-button" type="button" onClick={() => navigate(backTo)} aria-label="Volver">
-            ←
+          <button className="icon-button screen-header__back-button" type="button" onClick={() => navigate(backTo)} aria-label="Volver a inicio">
+            <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+              <path d="M14.5 6.5L9 12l5.5 5.5" />
+              <path d="M9 12h8.5" />
+            </svg>
           </button>
         ) : null}
         <div>

@@ -154,7 +154,7 @@ export function CalendarScreen() {
 
   return (
     <section className="screen stack-lg">
-      <ScreenHeader title="Calendario" subtitle={patient.nombre} showBack />
+      <ScreenHeader title="Calendario" subtitle={patient.nombre} showBack backTo="/home" />
 
       <Card>
         <div className="calendar-month-nav">
