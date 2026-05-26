@@ -7,6 +7,7 @@ import { Button } from '../../components/forms/Button';
 import { SectionTitle } from '../../components/feedback/SectionTitle';
 import { ScreenHeader } from '../../components/layout/ScreenHeader';
 import type { Activity, ActivityCategory, ActivityDuration, ActivityRecurrence } from '../../types/domain';
+import { useModalScrollLock } from '../../hooks/useModalScrollLock';
 
 interface AddActivityForm {
   tipo: ActivityCategory;
@@ -63,6 +64,8 @@ export function CalendarScreen() {
   const [feedback, setFeedback] = useState('');
   const [form, setForm] = useState<AddActivityForm>(DEFAULT_FORM);
   const [visibleMonth, setVisibleMonth] = useState(() => getMonthStartFromIso(selectedDate));
+
+  useModalScrollLock(isAddOpen);
 
   const currentYear = visibleMonth.getFullYear();
   const currentMonth = visibleMonth.getMonth();

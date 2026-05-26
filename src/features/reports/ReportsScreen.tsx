@@ -5,6 +5,7 @@ import { SectionTitle } from '../../components/feedback/SectionTitle';
 import { Button } from '../../components/forms/Button';
 import { ScreenHeader } from '../../components/layout/ScreenHeader';
 import { Card } from '../../components/cards/Card';
+import { useModalScrollLock } from '../../hooks/useModalScrollLock';
 
 type ReportStatus = 'revisado' | 'nuevo' | 'atencion' | 'urgente';
 
@@ -22,6 +23,9 @@ interface CareReport {
 export function ReportsScreen() {
   const { dailyReport } = useCareStore();
   const [selectedReportId, setSelectedReportId] = useState<string | null>(null);
+  const isModalOpen = selectedReportId !== null;
+
+  useModalScrollLock(isModalOpen);
 
   const reports = useMemo<CareReport[]>(
     () => [

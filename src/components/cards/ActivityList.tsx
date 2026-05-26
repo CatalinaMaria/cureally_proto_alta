@@ -3,6 +3,7 @@ import type { Activity } from '../../types/domain';
 import { Badge } from '../feedback/Badge';
 import { Button } from '../forms/Button';
 import { Card } from './Card';
+import { useModalScrollLock } from '../../hooks/useModalScrollLock';
 
 interface ActivityListProps {
   activities: Activity[];
@@ -26,6 +27,8 @@ export function ActivityList({
     setSelectedActivity(null);
     setRequestSent(false);
   };
+
+  useModalScrollLock(enableDetail && Boolean(selectedActivity));
 
   useEffect(() => {
     if (!enableDetail || !selectedActivity) return;

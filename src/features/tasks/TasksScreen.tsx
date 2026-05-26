@@ -7,12 +7,21 @@ import { SectionTitle } from '../../components/feedback/SectionTitle';
 import { Button } from '../../components/forms/Button';
 import { ScreenHeader } from '../../components/layout/ScreenHeader';
 import type { Task } from '../../types/domain';
+import { useModalScrollLock } from '../../hooks/useModalScrollLock';
+
+const RESPONSIBLE_OPTIONS = ['Carolina', 'Pedro'] as const;
 
 export function TasksScreen() {
   const navigate = useNavigate();
-  const { tasks, requestTaskConfirmation } = useCareStore();
+  const { tasks, requestTaskConfirmation, updateTaskResponsible } = useCareStore();
   const [taskFeedback, setTaskFeedback] = useState('');
   const [detailTaskId, setDetailTaskId] = useState<string | null>(null);
+  const [isResponsibleSelectorOpen, setIsResponsibleSelectorOpen] = useState(false);
+  const [responsibleSelection, setResponsibleSelection] = useState<(typeof RESPONSIBLE_OPTIONS)[number]>('Carolina');
+  const [detailFeedback, setDetailFeedback] = useState('');
+  const isModalOpen = detailTaskId !== null;
+
+  useModalScrollLock(isModalOpen);
 
   const detailTask = useMemo(() => tasks.find((task) => task.id === detailTaskId) ?? null, [tasks, detailTaskId]);
 
@@ -36,13 +45,37 @@ export function TasksScreen() {
 
   const openDetail = (task: Task) => {
     setDetailTaskId(task.id);
+    setIsResponsibleSelectorOpen(false);
+    setDetailFeedback('');
   };
 
-  const closeDetail = () => setDetailTaskId(null);
+  const closeDetail = () => {
+    setDetailTaskId(null);
+    setIsResponsibleSelectorOpen(false);
+    setDetailFeedback('');
+  };
 
   const handleRequestConfirmation = (task: Task) => {
     requestTaskConfirmation(task.id);
     pushFeedback(`Se solicitó confirmación a ${task.responsable}`);
+  };
+
+  const openResponsibleSelector = () => {
+    if (!detailTask) return;
+    setResponsibleSelection(detailTask.responsable === 'Pedro' ? 'Pedro' : 'Carolina');
+    setIsResponsibleSelectorOpen(true);
+  };
+
+  const closeResponsibleSelector = () => {
+    setIsResponsibleSelectorOpen(false);
+  };
+
+  const handleSaveResponsibleChange = () => {
+    if (!detailTask) return;
+    updateTaskResponsible(detailTask.id, responsibleSelection);
+    setIsResponsibleSelectorOpen(false);
+    setDetailFeedback('Responsable actualizado');
+    window.setTimeout(() => setDetailFeedback(''), 2600);
   };
 
   return (
@@ -101,6 +134,41 @@ export function TasksScreen() {
               </div>
             </dl>
 
+            <button type="button" className="task-modal-sheet__change-link" onClick={openResponsibleSelector}>
+              Cambiar responsable
+            </button>
+
+            {isResponsibleSelectorOpen ? (
+              <div className="task-modal-sheet__responsible-selector">
+                <p className="task-modal-sheet__responsible-title">Cambiar responsable</p>
+                <p className="task-modal-sheet__helper">{`Responsable actual: ${detailTask.responsable}`}</p>
+
+                <div className="task-modal-sheet__responsible-options" role="radiogroup" aria-label="Seleccionar responsable">
+                  {RESPONSIBLE_OPTIONS.map((responsible) => (
+                    <label key={responsible} className="task-modal-sheet__responsible-option">
+                      <input
+                        type="radio"
+                        name="responsable-tarea"
+                        value={responsible}
+                        checked={responsibleSelection === responsible}
+                        onChange={() => setResponsibleSelection(responsible)}
+                      />
+                      <span>{responsible}</span>
+                    </label>
+                  ))}
+                </div>
+
+                <div className="task-modal-sheet__responsible-actions">
+                  <Button type="button" fullWidth onClick={handleSaveResponsibleChange}>
+                    Guardar cambio
+                  </Button>
+                  <Button type="button" variant="secondary" fullWidth onClick={closeResponsibleSelector}>
+                    Cancelar
+                  </Button>
+                </div>
+              </div>
+            ) : null}
+
             <p className="task-modal-sheet__label">Descripción</p>
             <p className="task-modal-sheet__text">
               {detailTask.descripcion ?? 'Seguimiento de la tarea asignada en el plan de cuidado.'}
@@ -128,6 +196,12 @@ export function TasksScreen() {
                 Cerrar
               </Button>
             </div>
+
+            {detailFeedback ? (
+              <p className="task-modal-sheet__feedback" role="status" aria-live="polite">
+                {detailFeedback}
+              </p>
+            ) : null}
           </div>
         </div>
       ) : null}

@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import type { Activity } from '../../types/domain';
 import { Card } from './Card';
 import { Button } from '../forms/Button';
+import { useModalScrollLock } from '../../hooks/useModalScrollLock';
 
 interface ProximaActividadCardProps {
   activity: Activity | null;
@@ -26,6 +27,8 @@ export function ProximaActividadCard({
     setIsDetailOpen(false);
     setRequestSent(false);
   };
+
+  useModalScrollLock(isDetailOpen);
 
   useEffect(() => {
     if (!isDetailOpen) return;

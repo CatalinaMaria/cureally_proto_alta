@@ -12,6 +12,7 @@ import { MessagesScreen } from '../features/messages/MessagesScreen';
 import { MessagesConversationScreen } from '../features/messages/MessagesConversationScreen';
 import { ReportsScreen } from '../features/reports/ReportsScreen';
 import { StockScreen } from '../features/stock/StockScreen';
+import { PatientProfileScreen } from '../features/patient/PatientProfileScreen';
 
 export function AppRouter() {
   return (
@@ -29,6 +30,7 @@ export function AppRouter() {
           <Route path="/alerts" element={<AlertsScreen />} />
           <Route path="/stock" element={<StockScreen />} />
           <Route path="/reports" element={<ReportsScreen />} />
+          <Route path="/patient-profile" element={<PatientProfileScreen />} />
           <Route path="/profile" element={<ProfileScreen />} />
         </Route>
       </Route>

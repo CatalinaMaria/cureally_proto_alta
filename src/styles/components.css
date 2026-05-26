@@ -202,10 +202,20 @@
 }
 
 .home-patient-card {
+  background: linear-gradient(140deg, #fffdf8 0%, #f7f4ee 100%);
+}
+
+.home-patient-card__surface {
   display: flex;
   flex-direction: column;
   gap: var(--space-3);
-  background: linear-gradient(140deg, #fffdf8 0%, #f7f4ee 100%);
+  cursor: pointer;
+  border-radius: var(--radius-md);
+}
+
+.home-patient-card__surface:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 3px;
 }
 
 .home-patient-card__head {
@@ -215,8 +225,8 @@
 }
 
 .home-patient-card__avatar {
-  width: 44px;
-  height: 44px;
+  width: 58px;
+  height: 58px;
   border-radius: 50%;
   display: grid;
   place-items: center;
@@ -239,6 +249,7 @@
 .home-patient-card__profile-action {
   font-size: var(--size-12);
   font-weight: 600;
+  color: var(--accent-strong);
 }
 
 .home-patient-card__content {
@@ -786,7 +797,12 @@
   align-items: flex-end;
   justify-content: center;
   z-index: 40;
-  padding: var(--space-3);
+  padding-top: calc(var(--space-6) + env(safe-area-inset-top, 0px));
+  padding-right: calc(var(--space-3) + env(safe-area-inset-right, 0px));
+  padding-bottom: calc(var(--space-3) + env(safe-area-inset-bottom, 0px));
+  padding-left: calc(var(--space-3) + env(safe-area-inset-left, 0px));
+  overflow: hidden;
+  overscroll-behavior: contain;
 }
 
 .activity-modal-sheet {
@@ -795,8 +811,22 @@
   border: 1px solid var(--border-soft);
   border-radius: 20px 20px 14px 14px;
   box-shadow: 0 18px 36px rgba(20, 31, 41, 0.15);
+  max-height: calc(100vh - (var(--space-6) + env(safe-area-inset-top, 0px) + env(safe-area-inset-bottom, 0px)));
+  max-height: calc(100dvh - (var(--space-6) + env(safe-area-inset-top, 0px) + env(safe-area-inset-bottom, 0px)));
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  overscroll-behavior: contain;
+  scrollbar-width: none;
+  display: flex;
+  flex-direction: column;
   padding: var(--space-4);
-  padding-bottom: calc(var(--space-4) + env(safe-area-inset-bottom));
+  padding-bottom: calc(var(--space-5) + env(safe-area-inset-bottom, 0px));
+}
+
+.activity-modal-sheet::-webkit-scrollbar {
+  display: none;
+  width: 0;
+  height: 0;
 }
 
 .activity-modal-sheet__handle {
@@ -1197,6 +1227,74 @@
   line-height: 1.5;
 }
 
+.task-modal-sheet__change-link {
+  margin-top: var(--space-2);
+  align-self: flex-start;
+  font-size: var(--size-12);
+  font-weight: 600;
+  color: var(--accent-strong);
+  border: 1px solid #b9ddd8;
+  border-radius: 999px;
+  background: #eef8f6;
+  padding: 6px 12px;
+  line-height: 1.2;
+  cursor: pointer;
+  transition: background-color 120ms ease, border-color 120ms ease, color 120ms ease;
+}
+
+.task-modal-sheet__change-link:hover {
+  background: #e6f4f2;
+  border-color: #9ecfc8;
+}
+
+.task-modal-sheet__change-link:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+.task-modal-sheet__responsible-selector {
+  margin-top: var(--space-2);
+  border: 1px solid var(--border-soft);
+  border-radius: var(--radius-sm);
+  background: #fffefb;
+  padding: var(--space-3);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+.task-modal-sheet__responsible-title {
+  margin: 0;
+  color: var(--text-primary);
+  font-size: var(--size-14);
+  font-weight: 600;
+}
+
+.task-modal-sheet__responsible-options {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+.task-modal-sheet__responsible-option {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  font-size: var(--size-14);
+  color: var(--text-primary);
+}
+
+.task-modal-sheet__responsible-option input {
+  accent-color: var(--accent-strong);
+}
+
+.task-modal-sheet__responsible-actions {
+  margin-top: var(--space-1);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
 .task-modal-sheet__actions {
   margin-top: var(--space-4);
   display: flex;
@@ -1204,10 +1302,16 @@
   gap: var(--space-2);
 }
 
+.task-modal-sheet__feedback {
+  margin: var(--space-3) 0 0;
+  color: var(--accent-strong);
+  font-size: var(--size-12);
+  line-height: 1.4;
+}
+
 .reports-sheet {
-  max-height: 80vh;
-  overflow-y: auto;
-  padding-right: 2px;
+  max-height: none;
+  overflow-y: visible;
 }
 
 .report-sheet__label {
@@ -1561,17 +1665,9 @@
 }
 
 .contacts-sheet {
-  max-height: 80vh;
-  overflow-y: auto;
+  max-height: none;
+  overflow-y: visible;
   padding-inline: var(--space-1);
-  -ms-overflow-style: none;
-  scrollbar-width: none;
-}
-
-.contacts-sheet::-webkit-scrollbar {
-  display: none;
-  width: 0;
-  height: 0;
 }
 
 .contacts-sheet__list {
@@ -1612,6 +1708,106 @@
 .profile-action-card__title {
   font-weight: 600;
   margin-bottom: var(--space-1);
+}
+
+.profile-action-card__button {
+  margin-top: var(--space-3);
+}
+
+.profile-user-role {
+  margin: 0 0 var(--space-3);
+  color: var(--text-secondary);
+}
+
+.patient-detail-hero {
+  display: flex;
+  align-items: center;
+  gap: var(--space-4);
+  background: linear-gradient(150deg, #fffefb 0%, #f7f4ee 100%);
+}
+
+.patient-detail-hero__avatar-wrap {
+  width: 96px;
+  height: 96px;
+  border-radius: 50%;
+  border: 1px solid #b9ddd8;
+  overflow: hidden;
+  flex-shrink: 0;
+  background: var(--accent-soft);
+}
+
+.patient-detail-hero__avatar {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+  display: block;
+}
+
+.patient-detail-hero__content {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  min-width: 0;
+}
+
+.patient-detail-hero__name {
+  margin: 0;
+  font-size: var(--size-20);
+  line-height: 1.2;
+  font-weight: 700;
+  color: var(--text-primary);
+}
+
+.patient-detail-hero__meta {
+  margin: 0;
+  color: var(--text-secondary);
+}
+
+.patient-contacts-list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+
+.patient-contacts-list__item {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--space-3);
+  border-bottom: 1px solid var(--border-soft);
+  padding-bottom: var(--space-2);
+}
+
+.patient-contacts-list__item--emergency {
+  background: #fdf2f4;
+  border: 1px solid #e6c4cb;
+  border-radius: var(--radius-sm);
+  padding: var(--space-2) var(--space-3);
+  border-bottom: 1px solid #e6c4cb;
+}
+
+.patient-contacts-list__name {
+  margin: 0;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.patient-contacts-list__name--emergency {
+  color: #8f3340;
+}
+
+.patient-contacts-list__meta--emergency {
+  color: #9f5d66;
+}
+
+.patient-contacts-list__action--emergency {
+  color: #8f3340;
+  font-weight: 700;
+  border: 1px solid #d9a6af;
+  border-radius: 999px;
+  padding: 4px 10px;
+  background: #fff9fa;
 }
 
 .muted-text {

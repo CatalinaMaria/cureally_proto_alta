@@ -1,4 +1,4 @@
-import { useMemo } from 'react';
+import { type KeyboardEvent, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useCareStore } from '../../app/care-store';
 import { careNetwork, caregiverName } from '../../data/mockData';
@@ -57,34 +57,52 @@ export function HomeScreen() {
     },
   ];
 
+  const openPatientProfile = () => {
+    navigate('/patient-profile');
+  };
+
+  const handlePatientCardKey = (event: KeyboardEvent<HTMLDivElement>) => {
+    if (event.key === 'Enter' || event.key === ' ') {
+      event.preventDefault();
+      openPatientProfile();
+    }
+  };
+
   return (
     <section className="screen home-screen">
       <ScreenHeader title="Inicio" subtitle={`Hola, ${caregiverName}`} />
 
       <Card className="home-patient-card">
-        <div className="home-patient-card__head">
-          <div className="home-patient-card__avatar">
-            <img className="home-patient-card__avatar-image" src={juanAvatar} alt={`Foto de ${patient.nombre}`} />
+        <div
+          role="button"
+          tabIndex={0}
+          className="home-patient-card__surface"
+          aria-label={`Abrir perfil de ${patient.nombre}`}
+          onClick={openPatientProfile}
+          onKeyDown={handlePatientCardKey}
+        >
+          <div className="home-patient-card__head">
+            <div className="home-patient-card__avatar">
+              <img className="home-patient-card__avatar-image" src={juanAvatar} alt={`Foto de ${patient.nombre}`} />
+            </div>
+            <span className="home-patient-card__profile-action">Ver perfil →</span>
           </div>
-          <button type="button" className="text-button home-patient-card__profile-action" onClick={() => navigate('/profile')}>
-            Ver perfil →
-          </button>
-        </div>
-        <div className="home-patient-card__content">
-          <p className="home-patient-card__label">Estado de cuidado de Juan</p>
-          <p className="home-patient-card__name">{patient.nombre}</p>
-          <div className="home-patient-card__meta">
-            <span>{patient.edad} años</span>
-            <span className="home-patient-card__chip">{patient.diagnostico}</span>
+          <div className="home-patient-card__content">
+            <p className="home-patient-card__label">Estado de cuidado de Juan</p>
+            <p className="home-patient-card__name">{patient.nombre}</p>
+            <div className="home-patient-card__meta">
+              <span>{patient.edad} años</span>
+              <span className="home-patient-card__chip">{patient.diagnostico}</span>
+            </div>
+            <p className="home-patient-card__detail">
+              <span className="home-patient-card__detail-label">Próxima actividad:</span>{' '}
+              {nextActivity ? `${nextActivity.titulo} — ${formatHour(nextActivity.hora)}` : 'Sin actividades programadas'}
+            </p>
+            <p className="home-patient-card__detail">
+              <span className="home-patient-card__detail-label">Responsable:</span>{' '}
+              {careCoordinator ? `${careCoordinator.nombre}, ${careCoordinator.rol.toLowerCase()}` : 'Equipo de cuidado'}
+            </p>
           </div>
-          <p className="home-patient-card__detail">
-            <span className="home-patient-card__detail-label">Próxima actividad:</span>{' '}
-            {nextActivity ? `${nextActivity.titulo} — ${formatHour(nextActivity.hora)}` : 'Sin actividades programadas'}
-          </p>
-          <p className="home-patient-card__detail">
-            <span className="home-patient-card__detail-label">Responsable:</span>{' '}
-            {careCoordinator ? `${careCoordinator.nombre}, ${careCoordinator.rol.toLowerCase()}` : 'Equipo de cuidado'}
-          </p>
         </div>
       </Card>
 

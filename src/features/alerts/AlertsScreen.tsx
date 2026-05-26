@@ -6,12 +6,15 @@ import { SectionTitle } from '../../components/feedback/SectionTitle';
 import { Button } from '../../components/forms/Button';
 import { ScreenHeader } from '../../components/layout/ScreenHeader';
 import { careNetwork } from '../../data/mockData';
+import { useModalScrollLock } from '../../hooks/useModalScrollLock';
 
 export function AlertsScreen() {
   const navigate = useNavigate();
   const { alerts, dailyReport } = useCareStore();
   const [feedback, setFeedback] = useState('');
   const [isReportOpen, setIsReportOpen] = useState(false);
+
+  useModalScrollLock(isReportOpen);
 
   const caregiver = careNetwork.find((member) => member.rol.toLowerCase().includes('cuidadora'));
   const caregiverName = caregiver?.nombre ?? 'Carolina';

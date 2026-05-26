@@ -18,7 +18,8 @@ export const patient: Patient = {
 export const careNetwork: CareMember[] = [
   { id: 'cm-1', nombre: 'María', rol: 'Familiar responsable' },
   { id: 'cm-2', nombre: 'Carolina', rol: 'Cuidadora' },
-  { id: 'cm-3', nombre: 'Juan', rol: 'Padre' },
+  { id: 'cm-3', nombre: 'Pedro', rol: 'Cuidador' },
+  { id: 'cm-4', nombre: 'Juan', rol: 'Hijo' },
 ];
 
 export const initialActivities: Activity[] = [

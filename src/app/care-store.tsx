@@ -12,6 +12,7 @@ interface CareStoreValue {
   setSelectedDate: (date: string) => void;
   addActivity: (activity: Omit<Activity, 'id' | 'estado'>) => void;
   requestTaskConfirmation: (taskId: string) => void;
+  updateTaskResponsible: (taskId: string, responsable: string) => void;
   confirmAlert: (alertId: string) => void;
 }
 
@@ -45,6 +46,19 @@ export function CareStoreProvider({ children }: { children: ReactNode }) {
         setTasks((prev) =>
           prev.map((task) =>
             task.id === taskId && task.estado === 'sin_confirmar' ? { ...task, estado: 'pendiente' } : task,
+          ),
+        );
+      },
+      updateTaskResponsible: (taskId, responsable) => {
+        setTasks((prev) =>
+          prev.map((task) =>
+            task.id === taskId
+              ? {
+                  ...task,
+                  responsable,
+                  ultimaActualizacion: `Responsable actualizado a ${responsable}.`,
+                }
+              : task,
           ),
         );
       },
