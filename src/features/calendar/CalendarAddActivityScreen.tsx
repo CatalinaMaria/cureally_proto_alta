@@ -5,7 +5,7 @@ import { Button } from '../../components/forms/Button';
 import { Card } from '../../components/cards/Card';
 import { ScreenHeader } from '../../components/layout/ScreenHeader';
 import type { ActivityCategory, ActivityDuration, ActivityRecurrence } from '../../types/domain';
-import { careNetwork, CAROLINA_MEMBER_ID } from '../../data/mockData';
+import { careNetwork, MARIA_MEMBER_ID } from '../../data/mockData';
 
 interface AddActivityForm {
   tipo: ActivityCategory;
@@ -26,7 +26,7 @@ const DEFAULT_FORM: AddActivityForm = {
   hora: '04',
   minuto: '00',
   periodo: 'pm',
-  responsableId: CAROLINA_MEMBER_ID,
+  responsableId: MARIA_MEMBER_ID,
   repeticion: 'una_vez',
   duracion: 'indefinida',
   fechaFinalizacion: '',

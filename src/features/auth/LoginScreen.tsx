@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../../app/auth';
-import { demoUsers } from '../../data/mockData';
+import { demoUsers, getCareMember } from '../../data/mockData';
 import { Card } from '../../components/cards/Card';
 import { Button } from '../../components/forms/Button';
 import { MobileFrame } from '../../components/layout/MobileFrame';
@@ -40,7 +40,7 @@ export function LoginScreen() {
                 <span className="demo-profile-option__avatar" aria-hidden="true">{user.nombre.charAt(0)}</span>
                 <span className="demo-profile-option__content">
                   <strong>{user.nombre}</strong>
-                  <span>{user.role === 'family' ? 'Familiar responsable' : 'Cuidador profesional'}</span>
+                  <span>{getCareMember(user.careMemberId)?.rol ?? (user.isCoordinator ? 'Familiar responsable' : 'Familiar')}</span>
                   <small>{user.descripcion}</small>
                 </span>
               </label>

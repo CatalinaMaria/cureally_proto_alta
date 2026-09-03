@@ -16,9 +16,8 @@ export function HomeScreen() {
   const { currentUser } = useAuth();
   const { patient, tasks, alerts, activities, careUpdates, medicationRecords } = useCareStore();
 
-  const today = DEMO_TODAY;
   const todayActivities = useMemo(
-    () => activities.filter((activity) => activity.fecha === today).sort((a, b) => a.hora.localeCompare(b.hora)),
+    () => activities.filter((activity) => activity.fecha === DEMO_TODAY).sort((a, b) => a.hora.localeCompare(b.hora)),
     [activities],
   );
 
@@ -28,7 +27,7 @@ export function HomeScreen() {
   const nextActivity = todayActivities.find((activity) => activity.estado !== 'completada') ?? null;
   const nextResponsible = getCareMember(nextActivity?.responsableId);
 
-  const quickLinks: QuickAccessItem[] = [
+  const coordinatorQuickLinks: QuickAccessItem[] = [
     {
       id: 'quick-calendar',
       titulo: 'Calendario',
@@ -58,6 +57,13 @@ export function HomeScreen() {
       onSelect: () => navigate('/reports'),
     },
   ];
+  const memberQuickLinks: QuickAccessItem[] = [
+    coordinatorQuickLinks[0],
+    coordinatorQuickLinks[2],
+    coordinatorQuickLinks[3],
+    { id: 'quick-profile', titulo: 'Perfil', descripcion: 'Ver información de la red', icon: 'profile', onSelect: () => navigate('/profile') },
+  ];
+  const quickLinks = currentUser?.isCoordinator ? coordinatorQuickLinks : memberQuickLinks;
 
   const openPatientProfile = () => {
     navigate('/patient-profile');
@@ -72,7 +78,7 @@ export function HomeScreen() {
 
   return (
     <section className="screen home-screen">
-      <ScreenHeader title="Inicio" subtitle={`Hola, ${currentUser?.nombre ?? 'María'}`} />
+      <ScreenHeader title="Inicio" subtitle={`Hola, ${currentUser?.nombre ?? 'Carina'}`} />
 
       <Card className="home-patient-card">
         <div

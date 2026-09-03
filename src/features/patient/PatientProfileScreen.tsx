@@ -26,11 +26,11 @@ const importantContacts: ImportantContact[] = [
     accion: 'llamar',
   },
   {
-    id: 'contact-carolina',
-    nombre: 'Carolina',
+    id: 'contact-maria',
+    nombre: 'María',
     rol: 'Cuidadora profesional',
     accion: 'conversacion',
-    conversationId: 'conv-carolina',
+    conversationId: 'conv-maria',
   },
   {
     id: 'contact-farmacia',
@@ -70,7 +70,7 @@ export function PatientProfileScreen() {
 
   return (
     <section className="screen stack-lg">
-      <ScreenHeader title="Perfil de Juan" subtitle="Detalle del paciente" showBack backTo={currentUser?.role === 'caregiver' ? '/caregiver/home' : '/home'} />
+      <ScreenHeader title="Perfil de Juan" subtitle="Detalle de la persona cuidada" showBack backTo={currentUser?.role === 'caregiver' ? '/caregiver/home' : '/home'} />
 
       <Card className="patient-detail-hero">
         <div className="patient-detail-hero__avatar-wrap">
@@ -84,7 +84,7 @@ export function PatientProfileScreen() {
       </Card>
 
       <Card>
-        <h3 className="card-title">Información del paciente</h3>
+        <h3 className="card-title">Información de la persona cuidada</h3>
         <dl className="info-list">
           <div>
             <dt>Nombre</dt>

@@ -87,3 +87,10 @@ export function RequireRole({ role }: { role: UserRole }) {
 
   return <Outlet />;
 }
+
+export function RequireCoordinator() {
+  const { currentUser } = useAuth();
+  if (!currentUser) return <Navigate to="/login" replace />;
+  if (currentUser.role !== 'family' || !currentUser.isCoordinator) return <Navigate to="/home" replace />;
+  return <Outlet />;
+}

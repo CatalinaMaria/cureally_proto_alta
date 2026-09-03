@@ -1,6 +1,6 @@
 import { createContext, useContext, useMemo, useState, type ReactNode } from 'react';
-import { DEMO_TODAY, initialActivities, initialAlerts, initialDailyReport, initialTasks, patient } from '../data/mockData';
-import type { Activity, Alert, CareUpdate, DailyReport, MedicationRecord, Patient, Task, TaskShift } from '../types/domain';
+import { careNetwork, DEMO_TODAY, initialActivities, initialAlerts, initialDailyReport, initialStockItems, initialStockMovements, initialTasks, patient } from '../data/mockData';
+import type { Activity, Alert, CareUpdate, DailyReport, MedicationRecord, Patient, StockItem, StockMovement, Task, TaskShift } from '../types/domain';
 
 interface CareStoreValue {
   patient: Patient;
@@ -11,6 +11,8 @@ interface CareStoreValue {
   caregiverReports: DailyReport[];
   medicationRecords: MedicationRecord[];
   careUpdates: CareUpdate[];
+  stockItems: StockItem[];
+  stockMovements: StockMovement[];
   selectedDate: string;
   setSelectedDate: (date: string) => void;
   addActivity: (activity: Omit<Activity, 'id' | 'estado'>) => void;
@@ -20,6 +22,7 @@ interface CareStoreValue {
   recordMedication: (activityId: string, caregiverId: string) => boolean;
   addCareUpdate: (caregiverId: string, texto: string) => void;
   submitDailyReport: (caregiverId: string, turno: TaskShift, observaciones: string, checks: string[]) => void;
+  registerStockReplenishment: (actorId: string, stockItemId: string, cantidad: number, observacion?: string) => boolean;
   confirmAlert: (alertId: string) => void;
 }
 
@@ -33,6 +36,8 @@ export function CareStoreProvider({ children }: { children: ReactNode }) {
   const [caregiverReports, setCaregiverReports] = useState<DailyReport[]>([]);
   const [medicationRecords, setMedicationRecords] = useState<MedicationRecord[]>([]);
   const [careUpdates, setCareUpdates] = useState<CareUpdate[]>([]);
+  const [stockItems, setStockItems] = useState<StockItem[]>(initialStockItems);
+  const [stockMovements, setStockMovements] = useState<StockMovement[]>(initialStockMovements);
   const [selectedDate, setSelectedDate] = useState<string>('2026-05-13');
 
   const value = useMemo<CareStoreValue>(
@@ -45,6 +50,8 @@ export function CareStoreProvider({ children }: { children: ReactNode }) {
       caregiverReports,
       medicationRecords,
       careUpdates,
+      stockItems,
+      stockMovements,
       selectedDate,
       setSelectedDate,
       addActivity: (activity) => {
@@ -119,6 +126,10 @@ export function CareStoreProvider({ children }: { children: ReactNode }) {
           },
           ...prev,
         ]);
+        if (activity.stockItemId) {
+          setStockItems((prev) => prev.map((item) => item.id === activity.stockItemId ? { ...item, cantidad: Math.max(0, item.cantidad - 1) } : item));
+          setStockMovements((prev) => [{ id: `move-${Date.now()}`, stockItemId: activity.stockItemId!, cantidad: -1, tipo: 'administracion', actorId: caregiverId, registradaEn: 'Ahora' }, ...prev]);
+        }
         setAlerts((prev) =>
           prev.map((alert) =>
             alert.tipo === 'falta_confirmacion' && alert.responsableId === caregiverId
@@ -154,13 +165,21 @@ export function CareStoreProvider({ children }: { children: ReactNode }) {
           ...prev,
         ]);
       },
+      registerStockReplenishment: (actorId, stockItemId, cantidad, observacion) => {
+        const actor = careNetwork.find((member) => member.id === actorId);
+        const itemExists = stockItems.some((item) => item.id === stockItemId);
+        if (!actor || actor.tipo !== 'family' || !itemExists || cantidad <= 0) return false;
+        setStockItems((prev) => prev.map((item) => item.id === stockItemId ? { ...item, cantidad: item.cantidad + cantidad } : item));
+        setStockMovements((prev) => [{ id: `move-${Date.now()}`, stockItemId, cantidad, tipo: 'reposicion', actorId, observacion: observacion?.trim() || undefined, registradaEn: 'Ahora' }, ...prev]);
+        return true;
+      },
       confirmAlert: (alertId) => {
         setAlerts((prev) =>
           prev.map((alert) => (alert.id === alertId ? { ...alert, confirmada: true } : alert)),
         );
       },
     }),
-    [activities, alerts, careUpdates, caregiverReports, dailyReport, medicationRecords, selectedDate, tasks],
+    [activities, alerts, careUpdates, caregiverReports, dailyReport, medicationRecords, selectedDate, stockItems, stockMovements, tasks],
   );
 
   return <CareStoreContext.Provider value={value}>{children}</CareStoreContext.Provider>;

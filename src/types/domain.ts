@@ -12,6 +12,7 @@ export interface DemoUser {
   role: UserRole;
   careMemberId: string;
   descripcion: string;
+  isCoordinator?: boolean;
 }
 
 export interface Patient {
@@ -46,6 +47,27 @@ export interface Activity {
   repeticion?: ActivityRecurrence;
   duracion?: ActivityDuration;
   fechaFinalizacion?: string;
+  stockItemId?: string;
+}
+
+export type StockCategory = 'medicacion' | 'insumo';
+
+export interface StockItem {
+  id: string;
+  categoria: StockCategory;
+  nombre: string;
+  cantidad: number;
+  unidad: string;
+}
+
+export interface StockMovement {
+  id: string;
+  stockItemId: string;
+  cantidad: number;
+  tipo: 'reposicion' | 'administracion';
+  actorId: string;
+  observacion?: string;
+  registradaEn: string;
 }
 
 export type TaskStatus = 'sin_confirmar' | 'confirmada' | 'pendiente';

@@ -1286,6 +1286,58 @@
   line-height: 1.4;
 }
 
+.stock-movement-form {
+  display: grid;
+  gap: var(--space-4);
+}
+
+.stock-movements-card {
+  padding: 0;
+  overflow: hidden;
+}
+
+.stock-movement-list {
+  display: grid;
+}
+
+.stock-movement {
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  gap: var(--space-3);
+  align-items: start;
+  padding: var(--space-4);
+  border-bottom: 1px solid var(--border-soft);
+}
+
+.stock-movement:last-child {
+  border-bottom: 0;
+}
+
+.stock-movement p {
+  margin: 0;
+  line-height: 1.4;
+}
+
+.stock-movement small,
+.stock-movement time {
+  color: var(--text-secondary);
+  font-size: var(--size-12);
+}
+
+.stock-movement__amount--positive,
+.stock-movement__amount--negative {
+  min-width: 2.5rem;
+  font-weight: 800;
+}
+
+.stock-movement__amount--positive {
+  color: var(--success);
+}
+
+.stock-movement__amount--negative {
+  color: var(--danger);
+}
+
 .task-card {
   gap: var(--space-2);
 }

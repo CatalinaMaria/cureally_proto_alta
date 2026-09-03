@@ -5,6 +5,7 @@ import { Card } from './Card';
 
 interface AlertListProps {
   alerts: Alert[];
+  canRequestConfirmation?: boolean;
   onRequestConfirmation: (alert: Alert) => void;
   onContactCaregiver: (alert: Alert) => void;
   onViewCalendar: (alert: Alert) => void;
@@ -14,6 +15,7 @@ interface AlertListProps {
 
 export function AlertList({
   alerts,
+  canRequestConfirmation = true,
   onRequestConfirmation,
   onContactCaregiver,
   onViewCalendar,
@@ -40,9 +42,11 @@ export function AlertList({
           <div className="alert-card__actions">
             {alert.tipo === 'falta_confirmacion' ? (
               <>
-                <Button type="button" variant="secondary" onClick={() => onRequestConfirmation(alert)}>
-                  Solicitar confirmación
-                </Button>
+                {canRequestConfirmation ? (
+                  <Button type="button" variant="secondary" onClick={() => onRequestConfirmation(alert)}>
+                    Solicitar confirmación
+                  </Button>
+                ) : null}
                 <Button type="button" variant="ghost" onClick={() => onContactCaregiver(alert)}>
                   Contactar responsable
                 </Button>

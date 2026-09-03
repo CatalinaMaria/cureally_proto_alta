@@ -4,7 +4,7 @@ import { Card } from './Card';
 export function PatientInfoCard({ patient }: { patient: Patient }) {
   return (
     <Card>
-      <h3 className="card-title">Información del paciente</h3>
+      <h3 className="card-title">Información de la persona cuidada</h3>
       <dl className="info-list">
         <div>
           <dt>Nombre</dt>

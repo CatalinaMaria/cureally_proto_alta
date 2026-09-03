@@ -1,20 +1,22 @@
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useAuth } from '../../app/auth';
 import { useCareStore } from '../../app/care-store';
 import { AlertList } from '../../components/cards/AlertList';
 import { SectionTitle } from '../../components/feedback/SectionTitle';
 import { Button } from '../../components/forms/Button';
 import { ScreenHeader } from '../../components/layout/ScreenHeader';
-import { CAROLINA_MEMBER_ID, getCareMemberName } from '../../data/mockData';
+import { MARIA_MEMBER_ID, getCareMemberName } from '../../data/mockData';
 import { useModalScrollLock } from '../../hooks/useModalScrollLock';
 import { getConversationIdForMember } from '../messages/messagesData';
 
 export function AlertsScreen() {
   const navigate = useNavigate();
+  const { currentUser } = useAuth();
   const { alerts, dailyReport } = useCareStore();
   const [feedback, setFeedback] = useState('');
   const [isReportOpen, setIsReportOpen] = useState(false);
-  const [reportAuthorId, setReportAuthorId] = useState(CAROLINA_MEMBER_ID);
+  const [reportAuthorId, setReportAuthorId] = useState(MARIA_MEMBER_ID);
 
   useModalScrollLock(isReportOpen);
 
@@ -37,7 +39,7 @@ export function AlertsScreen() {
   }, [isReportOpen]);
 
   const openReportSheet = (responsableId?: string) => {
-    setReportAuthorId(responsableId ?? CAROLINA_MEMBER_ID);
+    setReportAuthorId(responsableId ?? MARIA_MEMBER_ID);
     setIsReportOpen(true);
   };
 
@@ -52,6 +54,7 @@ export function AlertsScreen() {
 
       <AlertList
         alerts={alerts}
+        canRequestConfirmation={currentUser?.isCoordinator}
         onRequestConfirmation={(alert) => pushFeedback(`Solicitud enviada a ${getCareMemberName(alert.responsableId)}`)}
         onContactCaregiver={(alert) => navigate(`/messages/${getConversationIdForMember(alert.responsableId)}`)}
         onViewCalendar={() => navigate('/calendar')}

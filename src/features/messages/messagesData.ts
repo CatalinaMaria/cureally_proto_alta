@@ -1,4 +1,4 @@
-import { CAROLINA_MEMBER_ID, PEDRO_MEMBER_ID } from '../../data/mockData';
+import { MARIA_MEMBER_ID, PEDRO_MEMBER_ID } from '../../data/mockData';
 
 export type ConversationStatus = 'respondido' | 'pendiente' | 'nuevo';
 
@@ -24,15 +24,15 @@ export const CONVERSATIONS: Conversation[] = [
   {
     id: 'conv-red-juan',
     titulo: 'Red de cuidado de Juan',
-    subtitulo: 'María, Diego, Carolina y Pedro',
-    ultimoMensaje: 'Carolina confirmó la medicación de la mañana.',
+    subtitulo: 'Carina, Diego, María y Pedro',
+    ultimoMensaje: 'María confirmó la medicación de la mañana.',
     hora: 'Hace 10 min',
     estado: 'nuevo',
     esGrupo: true,
   },
   {
-    id: 'conv-carolina',
-    titulo: 'Carolina',
+    id: 'conv-maria',
+    titulo: 'María',
     subtitulo: 'Cuidadora profesional',
     ultimoMensaje: 'Estuvo bien, desayunó y tomó la medicación.',
     hora: 'Hace 24 min',
@@ -52,16 +52,16 @@ export const CONVERSATION_THREADS: Record<string, ConversationMessage[]> = {
   'conv-red-juan': [
     {
       id: 'g-msg-1',
-      remitente: 'Carolina',
+      remitente: 'María',
       tipoRemitente: 'caregiver',
       texto: 'Juan tomó la medicación de la mañana después del desayuno.',
       hora: '08:20',
     },
     {
       id: 'g-msg-2',
-      remitente: 'María',
+      remitente: 'Carina',
       tipoRemitente: 'family',
-      texto: 'Gracias, Carolina.',
+      texto: 'Gracias, María.',
       hora: '08:22',
     },
     {
@@ -79,24 +79,24 @@ export const CONVERSATION_THREADS: Record<string, ConversationMessage[]> = {
       hora: '08:27',
     },
   ],
-  'conv-carolina': [
+  'conv-maria': [
     {
       id: 'c-msg-1',
-      remitente: 'María',
+      remitente: 'Carina',
       tipoRemitente: 'family',
-      texto: 'Hola Carolina, ¿me confirmás cómo estuvo Juan esta mañana?',
+      texto: 'Hola María, ¿me confirmás cómo estuvo Juan esta mañana?',
       hora: '08:12',
     },
     {
       id: 'c-msg-2',
-      remitente: 'Carolina',
+      remitente: 'María',
       tipoRemitente: 'caregiver',
       texto: 'Estuvo bien, desayunó y tomó la medicación.',
       hora: '08:19',
     },
     {
       id: 'c-msg-3',
-      remitente: 'María',
+      remitente: 'Carina',
       tipoRemitente: 'family',
       texto: 'Gracias.',
       hora: '08:21',
@@ -105,7 +105,7 @@ export const CONVERSATION_THREADS: Record<string, ConversationMessage[]> = {
   'conv-pedro': [
     {
       id: 'p-msg-1',
-      remitente: 'María',
+      remitente: 'Carina',
       tipoRemitente: 'family',
       texto: 'Pedro, ¿podés confirmar si ya está listo el traslado para la consulta?',
       hora: '09:12',
@@ -133,7 +133,7 @@ export function getConversationIdFromName(name?: string) {
 }
 
 export function getConversationIdForMember(memberId?: string) {
-  if (memberId === CAROLINA_MEMBER_ID) return 'conv-carolina';
+  if (memberId === MARIA_MEMBER_ID) return 'conv-maria';
   if (memberId === PEDRO_MEMBER_ID) return 'conv-pedro';
   return 'conv-red-juan';
 }

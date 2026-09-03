@@ -20,20 +20,20 @@ export function ProfileScreen() {
       <ScreenHeader title="Mi perfil" subtitle="Información de tu cuenta y preferencias" />
 
       <Card>
-        <h3 className="card-title">{currentUser?.nombre ?? 'María'}</h3>
-        <p className="profile-user-role">Familiar responsable</p>
+        <h3 className="card-title">{currentUser?.nombre ?? 'Carina'}</h3>
+        <p className="profile-user-role">{currentUser?.isCoordinator ? 'Familiar responsable' : 'Familiar'}</p>
         <dl className="info-list">
           <div>
             <dt>Email</dt>
-            <dd>{currentUser?.email ?? 'maria@cureally.com'}</dd>
+            <dd>{currentUser?.email ?? 'carina@cureally.com'}</dd>
           </div>
           <div>
-            <dt>Paciente asociado</dt>
+            <dt>Persona cuidada asociada</dt>
             <dd>{patient.nombre}</dd>
           </div>
           <div>
             <dt>Rol en la red de cuidado</dt>
-            <dd>Familiar responsable</dd>
+            <dd>{currentUser?.isCoordinator ? 'Familiar responsable' : 'Familiar participante'}</dd>
           </div>
         </dl>
         <Button type="button" variant="secondary" className="profile-action-card__button" onClick={() => navigate('/patient-profile')}>
@@ -41,7 +41,7 @@ export function ProfileScreen() {
         </Button>
       </Card>
 
-      <Card>
+      {currentUser?.isCoordinator ? <Card>
         <h3 className="card-title">Preferencias de notificaciones</h3>
         <ul className="simple-list">
           <li>
@@ -57,12 +57,12 @@ export function ProfileScreen() {
             <span className="muted-text">Activados</span>
           </li>
         </ul>
-      </Card>
+      </Card> : null}
 
-      <Card className="profile-action-card">
+      {currentUser?.isCoordinator ? <Card className="profile-action-card">
         <p className="profile-action-card__title">Configuración de cuenta</p>
         <p className="muted-text">Preferencias de seguridad, idioma y notificaciones.</p>
-      </Card>
+      </Card> : null}
 
       <Button variant="danger" fullWidth onClick={handleLogout}>
         Cerrar sesión

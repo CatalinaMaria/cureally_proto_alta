@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
+import { useAuth } from '../../app/auth';
 import { useCareStore } from '../../app/care-store';
 import { ActivityList } from '../../components/cards/ActivityList';
 import { CalendarMonthGrid } from '../../components/cards/CalendarMonthGrid';
@@ -31,6 +32,7 @@ interface CalendarRouteState {
 export function CalendarScreen() {
   const navigate = useNavigate();
   const location = useLocation();
+  const { currentUser } = useAuth();
   const { selectedDate, setSelectedDate, activities, patient } = useCareStore();
   const routeState = (location.state as CalendarRouteState | null) ?? null;
   const [feedback, setFeedback] = useState(() => routeState?.calendarFeedback ?? '');
@@ -127,9 +129,11 @@ export function CalendarScreen() {
         </p>
       ) : null}
 
-      <Button variant="secondary" fullWidth onClick={() => navigate('/calendar/add')}>
-        + Agregar actividad o medicación
-      </Button>
+      {currentUser?.isCoordinator ? (
+        <Button variant="secondary" fullWidth onClick={() => navigate('/calendar/add')}>
+          + Agregar actividad o medicación
+        </Button>
+      ) : null}
     </section>
   );
 }

@@ -1,158 +1,78 @@
-import { useState } from 'react';
+import { useState, type FormEvent } from 'react';
+import { useAuth } from '../../app/auth';
+import { useCareStore } from '../../app/care-store';
 import { Card } from '../../components/cards/Card';
 import { Badge } from '../../components/feedback/Badge';
 import { SectionTitle } from '../../components/feedback/SectionTitle';
 import { Button } from '../../components/forms/Button';
 import { ScreenHeader } from '../../components/layout/ScreenHeader';
-
-type StockCategory = 'medicacion' | 'insumo';
-type StockStatus = 'bajo' | 'suficiente' | 'critico';
-
-interface StockItem {
-  id: string;
-  categoria: StockCategory;
-  nombre: string;
-  detalle: string;
-  estado: StockStatus;
-}
-
-const STOCK_ITEMS: StockItem[] = [
-  {
-    id: 'stock-memantina',
-    categoria: 'medicacion',
-    nombre: 'Memantina 20 mg',
-    detalle: 'Quedan 5 dosis',
-    estado: 'bajo',
-  },
-  {
-    id: 'stock-aspirina',
-    categoria: 'medicacion',
-    nombre: 'Aspirina 100 mg',
-    detalle: 'Quedan 12 dosis',
-    estado: 'suficiente',
-  },
-  {
-    id: 'stock-panales',
-    categoria: 'insumo',
-    nombre: 'Pañales',
-    detalle: 'Quedan 2 unidades',
-    estado: 'critico',
-  },
-  {
-    id: 'stock-gasas',
-    categoria: 'insumo',
-    nombre: 'Gasas',
-    detalle: 'Stock suficiente',
-    estado: 'suficiente',
-  },
-];
+import { getCareMemberName } from '../../data/mockData';
+import type { StockItem } from '../../types/domain';
 
 export function StockScreen() {
-  const [requestedReplenishment, setRequestedReplenishment] = useState<Record<string, boolean>>({});
+  const { currentUser } = useAuth();
+  const { stockItems, stockMovements, registerStockReplenishment } = useCareStore();
+  const [isFormOpen, setIsFormOpen] = useState(false);
+  const [stockItemId, setStockItemId] = useState(stockItems[0]?.id ?? '');
+  const [quantity, setQuantity] = useState('');
+  const [note, setNote] = useState('');
   const [feedback, setFeedback] = useState('');
 
-  const handleRequestReplenishment = (itemId: string) => {
-    setRequestedReplenishment((prev) => ({ ...prev, [itemId]: true }));
-    setFeedback('Solicitud enviada a la red de cuidado.');
-    window.setTimeout(() => setFeedback(''), 2600);
+  const handleSubmit = (event: FormEvent) => {
+    event.preventDefault();
+    const amount = Number(quantity);
+    if (!currentUser || !registerStockReplenishment(currentUser.careMemberId, stockItemId, amount, note)) return;
+    setQuantity('');
+    setNote('');
+    setIsFormOpen(false);
+    setFeedback('Reposición registrada y compartida con la red de cuidado.');
+    window.setTimeout(() => setFeedback(''), 2800);
   };
 
   return (
     <section className="screen stack-lg">
       <ScreenHeader title="Stock de cuidado" subtitle="Medicaciones e insumos necesarios para Juan." showBack backTo="/home" />
 
-      <section>
-        <SectionTitle title="Medicación" />
-        <div className="stack-sm">
-          {STOCK_ITEMS.filter((item) => item.categoria === 'medicacion').map((item) => (
-            <StockCard
-              key={item.id}
-              item={item}
-              requested={requestedReplenishment[item.id]}
-              onRequestReplenishment={handleRequestReplenishment}
-            />
-          ))}
-        </div>
-      </section>
+      <Button type="button" fullWidth onClick={() => setIsFormOpen((open) => !open)}>
+        {isFormOpen ? 'Cerrar registro' : '+ Registrar compra o reposición'}
+      </Button>
 
-      <section>
-        <SectionTitle title="Insumos" />
-        <div className="stack-sm">
-          {STOCK_ITEMS.filter((item) => item.categoria === 'insumo').map((item) => (
-            <StockCard
-              key={item.id}
-              item={item}
-              requested={requestedReplenishment[item.id]}
-              onRequestReplenishment={handleRequestReplenishment}
-            />
-          ))}
-        </div>
-      </section>
-
-      {feedback ? (
-        <p className="stock-feedback" role="status" aria-live="polite">
-          {feedback}
-        </p>
+      {isFormOpen ? (
+        <Card>
+          <form className="stock-movement-form" onSubmit={handleSubmit}>
+            <label className="field"><span className="field__label">Producto</span><select className="field__input" value={stockItemId} onChange={(event) => setStockItemId(event.target.value)}>{stockItems.map((item) => <option key={item.id} value={item.id}>{item.nombre}</option>)}</select></label>
+            <label className="field"><span className="field__label">Cantidad incorporada</span><input className="field__input" type="number" min="1" value={quantity} onChange={(event) => setQuantity(event.target.value)} placeholder="Ej: 30" required /></label>
+            <label className="field"><span className="field__label">Observación opcional</span><textarea className="field__textarea" rows={3} value={note} onChange={(event) => setNote(event.target.value)} placeholder="Ej: Compra mensual" /></label>
+            <Button type="submit" fullWidth>Guardar movimiento</Button>
+          </form>
+        </Card>
       ) : null}
+
+      {feedback ? <p className="stock-feedback" role="status">{feedback}</p> : null}
+
+      {(['medicacion', 'insumo'] as const).map((category) => (
+        <section key={category}>
+          <SectionTitle title={category === 'medicacion' ? 'Medicación' : 'Insumos'} />
+          <div className="stack-sm">{stockItems.filter((item) => item.categoria === category).map((item) => <StockCard key={item.id} item={item} />)}</div>
+        </section>
+      ))}
+
+      <section>
+        <SectionTitle title="Últimos movimientos" />
+        <Card className="stock-movements-card">
+          <div className="stock-movement-list">
+            {stockMovements.map((movement) => {
+              const item = stockItems.find((candidate) => candidate.id === movement.stockItemId);
+              return <div key={movement.id} className="stock-movement"><span className={movement.cantidad > 0 ? 'stock-movement__amount--positive' : 'stock-movement__amount--negative'}>{movement.cantidad > 0 ? '+' : ''}{movement.cantidad}</span><div><p><strong>{item?.nombre}</strong> — {movement.tipo === 'reposicion' ? 'Reposición' : 'Administrada'} por {getCareMemberName(movement.actorId)}</p>{movement.observacion ? <small>{movement.observacion}</small> : null}</div><time>{movement.registradaEn}</time></div>;
+            })}
+          </div>
+        </Card>
+      </section>
     </section>
   );
 }
 
-function StockCard({
-  item,
-  requested,
-  onRequestReplenishment,
-}: {
-  item: StockItem;
-  requested?: boolean;
-  onRequestReplenishment: (itemId: string) => void;
-}) {
-  const showReplenishmentAction = item.estado === 'bajo' || item.estado === 'critico';
-
-  return (
-    <Card className={`list-card stock-card ${stockCardClass(item.estado)}`}>
-      <div className="list-card__row">
-        <p className="list-card__title">{item.nombre}</p>
-        <Badge variant={stockBadgeVariant(item.estado)}>{stockStatusLabel(item.estado)}</Badge>
-      </div>
-      <p className="list-card__meta">{item.detalle}</p>
-
-      {showReplenishmentAction ? (
-        <div className="stock-card__actions">
-          <Button
-            type="button"
-            variant="secondary"
-            onClick={() => onRequestReplenishment(item.id)}
-            disabled={requested}
-          >
-            {requested
-              ? item.estado === 'critico'
-                ? 'Reposición urgente solicitada'
-                : 'Reposición solicitada'
-              : item.estado === 'critico'
-                ? 'Solicitar reposición urgente'
-                : 'Solicitar reposición'}
-          </Button>
-        </div>
-      ) : null}
-    </Card>
-  );
-}
-
-function stockStatusLabel(status: StockStatus) {
-  if (status === 'critico') return 'Crítico';
-  if (status === 'bajo') return 'Bajo stock';
-  return 'Suficiente';
-}
-
-function stockBadgeVariant(status: StockStatus) {
-  if (status === 'critico') return 'danger';
-  if (status === 'bajo') return 'warning';
-  return 'success';
-}
-
-function stockCardClass(status: StockStatus) {
-  if (status === 'critico') return 'stock-card--critical';
-  if (status === 'bajo') return 'stock-card--low';
-  return 'stock-card--ok';
+function StockCard({ item }: { item: StockItem }) {
+  const status = item.cantidad <= 2 ? 'critico' : item.cantidad <= 5 ? 'bajo' : 'suficiente';
+  return <Card className={`list-card stock-card stock-card--${status === 'critico' ? 'critical' : status === 'bajo' ? 'low' : 'ok'}`}><div className="list-card__row"><p className="list-card__title">{item.nombre}</p><Badge variant={status === 'critico' ? 'danger' : status === 'bajo' ? 'warning' : 'success'}>{status === 'critico' ? 'Crítico' : status === 'bajo' ? 'Bajo stock' : 'Suficiente'}</Badge></div><p className="list-card__meta">Quedan {item.cantidad} {item.unidad}</p></Card>;
 }

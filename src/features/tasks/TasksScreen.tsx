@@ -8,7 +8,7 @@ import { Button } from '../../components/forms/Button';
 import { ScreenHeader } from '../../components/layout/ScreenHeader';
 import type { Task } from '../../types/domain';
 import { useModalScrollLock } from '../../hooks/useModalScrollLock';
-import { careNetwork, CAROLINA_MEMBER_ID, getCareMemberName } from '../../data/mockData';
+import { careNetwork, MARIA_MEMBER_ID, getCareMemberName } from '../../data/mockData';
 import { getConversationIdForMember } from '../messages/messagesData';
 
 const RESPONSIBLE_OPTIONS = careNetwork.filter((member) => member.tipo === 'caregiver');
@@ -19,7 +19,7 @@ export function TasksScreen() {
   const [taskFeedback, setTaskFeedback] = useState('');
   const [detailTaskId, setDetailTaskId] = useState<string | null>(null);
   const [isResponsibleSelectorOpen, setIsResponsibleSelectorOpen] = useState(false);
-  const [responsibleSelection, setResponsibleSelection] = useState(CAROLINA_MEMBER_ID);
+  const [responsibleSelection, setResponsibleSelection] = useState(MARIA_MEMBER_ID);
   const [detailFeedback, setDetailFeedback] = useState('');
   const isModalOpen = detailTaskId !== null;
 

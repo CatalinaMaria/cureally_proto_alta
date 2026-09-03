@@ -37,7 +37,7 @@ export function CaregiverLogScreen() {
 
   const handleMedication = (activityId: string) => {
     if (recordMedication(activityId, caregiverId)) {
-      publishFeedback('Medicación registrada. María ya puede ver la confirmación.');
+      publishFeedback('Medicación registrada. Carina ya puede ver la confirmación.');
     }
   };
 
@@ -55,7 +55,7 @@ export function CaregiverLogScreen() {
     submitDailyReport(caregiverId, shift, reportText, checks);
     setReportText('');
     setChecks([]);
-    publishFeedback('Informe diario enviado. María ya puede consultarlo.');
+    publishFeedback('Informe diario enviado. Carina ya puede consultarlo.');
   };
 
   const toggleCheck = (value: string) => {

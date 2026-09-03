@@ -1,7 +1,7 @@
-import type { Activity, Alert, CareMember, DailyReport, DemoUser, Patient, Task } from '../types/domain';
+import type { Activity, Alert, CareMember, DailyReport, DemoUser, Patient, StockItem, StockMovement, Task } from '../types/domain';
 
+export const CARINA_MEMBER_ID = 'cm-carina';
 export const MARIA_MEMBER_ID = 'cm-maria';
-export const CAROLINA_MEMBER_ID = 'cm-carolina';
 export const PEDRO_MEMBER_ID = 'cm-pedro';
 export const DIEGO_MEMBER_ID = 'cm-diego';
 export const DEMO_TODAY = '2026-05-13';
@@ -15,27 +15,36 @@ export const patient: Patient = {
 };
 
 export const careNetwork: CareMember[] = [
-  { id: MARIA_MEMBER_ID, nombre: 'María', rol: 'Familiar responsable', tipo: 'family' },
-  { id: CAROLINA_MEMBER_ID, nombre: 'Carolina', rol: 'Cuidadora profesional', tipo: 'caregiver' },
+  { id: CARINA_MEMBER_ID, nombre: 'Carina', rol: 'Hija · Familiar responsable', tipo: 'family' },
+  { id: DIEGO_MEMBER_ID, nombre: 'Diego', rol: 'Hijo · Familiar', tipo: 'family' },
+  { id: MARIA_MEMBER_ID, nombre: 'María', rol: 'Cuidadora profesional', tipo: 'caregiver' },
   { id: PEDRO_MEMBER_ID, nombre: 'Pedro', rol: 'Cuidador profesional', tipo: 'caregiver' },
-  { id: DIEGO_MEMBER_ID, nombre: 'Diego', rol: 'Hijo', tipo: 'family' },
 ];
 
 export const demoUsers: DemoUser[] = [
   {
+    id: 'user-carina',
+    nombre: 'Carina',
+    email: 'carina@cureally.com',
+    role: 'family',
+    careMemberId: CARINA_MEMBER_ID,
+    descripcion: 'Supervisa y coordina el cuidado de Juan.',
+    isCoordinator: true,
+  },
+  {
+    id: 'user-diego',
+    nombre: 'Diego',
+    email: 'diego@cureally.com',
+    role: 'family',
+    careMemberId: DIEGO_MEMBER_ID,
+    descripcion: 'Participa y colabora con la red de cuidado.',
+  },
+  {
     id: 'user-maria',
     nombre: 'María',
     email: 'maria@cureally.com',
-    role: 'family',
-    careMemberId: MARIA_MEMBER_ID,
-    descripcion: 'Supervisa y coordina el cuidado de Juan.',
-  },
-  {
-    id: 'user-carolina',
-    nombre: 'Carolina',
-    email: 'carolina@cureally.com',
     role: 'caregiver',
-    careMemberId: CAROLINA_MEMBER_ID,
+    careMemberId: MARIA_MEMBER_ID,
     descripcion: 'Consulta y registra las tareas de su turno.',
   },
   {
@@ -64,7 +73,8 @@ export const initialActivities: Activity[] = [
     titulo: 'Memantina 20 mg',
     categoria: 'medicacion',
     estado: 'pendiente',
-    responsableId: CAROLINA_MEMBER_ID,
+    responsableId: MARIA_MEMBER_ID,
+    stockItemId: 'stock-memantina',
   },
   {
     id: 'act-2',
@@ -74,6 +84,7 @@ export const initialActivities: Activity[] = [
     categoria: 'medicacion',
     estado: 'pendiente',
     responsableId: PEDRO_MEMBER_ID,
+    stockItemId: 'stock-aspirina',
   },
   {
     id: 'act-3',
@@ -91,7 +102,7 @@ export const initialActivities: Activity[] = [
     titulo: 'Control de presión arterial',
     categoria: 'tarea',
     estado: 'pendiente',
-    responsableId: CAROLINA_MEMBER_ID,
+    responsableId: MARIA_MEMBER_ID,
   },
   {
     id: 'act-5',
@@ -110,7 +121,7 @@ export const initialTasks: Task[] = [
     titulo: 'Dar medicación de la mañana',
     estado: 'sin_confirmar',
     franja: 'manana',
-    responsableId: CAROLINA_MEMBER_ID,
+    responsableId: MARIA_MEMBER_ID,
     descripcion: 'Administrar la medicación indicada luego del desayuno.',
     ultimaActualizacion: 'Aún no confirmada por la persona responsable.',
   },
@@ -128,7 +139,7 @@ export const initialTasks: Task[] = [
     titulo: 'Preparar almuerzo',
     estado: 'confirmada',
     franja: 'tarde',
-    responsableId: CAROLINA_MEMBER_ID,
+    responsableId: MARIA_MEMBER_ID,
     descripcion: 'Preparar un almuerzo liviano según las recomendaciones médicas.',
     ultimaActualizacion: 'Confirmada por la persona responsable a las 12:10 PM.',
   },
@@ -139,11 +150,11 @@ export const initialAlerts: Alert[] = [
     id: 'alert-1',
     tipo: 'falta_confirmacion',
     titulo: 'Medicación sin confirmar',
-    descripcion: 'Carolina aún no confirmó Memantina 20 mg de las 8:00 AM.',
+    descripcion: 'María aún no confirmó Memantina 20 mg de las 8:00 AM.',
     hora: '08:00 AM',
     severidad: 'alta',
     confirmada: false,
-    responsableId: CAROLINA_MEMBER_ID,
+    responsableId: MARIA_MEMBER_ID,
   },
   {
     id: 'alert-2',
@@ -159,11 +170,11 @@ export const initialAlerts: Alert[] = [
     id: 'alert-3',
     tipo: 'informe_nuevo',
     titulo: 'Nuevo informe disponible',
-    descripcion: 'Carolina cargó el informe diario de la mañana.',
+    descripcion: 'María cargó el informe diario de la mañana.',
     hora: '11:45 AM',
     severidad: 'baja',
     confirmada: false,
-    responsableId: CAROLINA_MEMBER_ID,
+    responsableId: MARIA_MEMBER_ID,
   },
   {
     id: 'alert-4',
@@ -177,10 +188,22 @@ export const initialAlerts: Alert[] = [
 ];
 
 export const initialDailyReport: DailyReport = {
-  id: 'report-initial-carolina',
+  id: 'report-initial-maria',
   fecha: '2026-05-13',
-  cuidadorId: CAROLINA_MEMBER_ID,
+  cuidadorId: MARIA_MEMBER_ID,
   turno: 'manana',
-  observaciones: 'Paciente con buen ánimo durante la mañana.',
+  observaciones: 'Juan estuvo de buen ánimo durante la mañana.',
   checks: ['Medicación de la mañana confirmada', 'Hidratación verificada', 'Descanso posterior al almuerzo'],
 };
+
+export const initialStockItems: StockItem[] = [
+  { id: 'stock-memantina', categoria: 'medicacion', nombre: 'Memantina 20 mg', cantidad: 5, unidad: 'dosis' },
+  { id: 'stock-aspirina', categoria: 'medicacion', nombre: 'Aspirina 100 mg', cantidad: 12, unidad: 'dosis' },
+  { id: 'stock-panales', categoria: 'insumo', nombre: 'Pañales', cantidad: 2, unidad: 'unidades' },
+  { id: 'stock-gasas', categoria: 'insumo', nombre: 'Gasas', cantidad: 24, unidad: 'unidades' },
+];
+
+export const initialStockMovements: StockMovement[] = [
+  { id: 'move-1', stockItemId: 'stock-memantina', cantidad: 30, tipo: 'reposicion', actorId: CARINA_MEMBER_ID, registradaEn: 'Ayer' },
+  { id: 'move-2', stockItemId: 'stock-panales', cantidad: 20, tipo: 'reposicion', actorId: DIEGO_MEMBER_ID, registradaEn: 'Hace 2 días' },
+];

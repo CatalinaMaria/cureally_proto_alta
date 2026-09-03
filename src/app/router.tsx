@@ -1,5 +1,5 @@
 import { Navigate, Route, Routes } from 'react-router-dom';
-import { RequireAuth, RequireRole } from './auth';
+import { RequireAuth, RequireCoordinator, RequireRole } from './auth';
 import { AppShell } from '../components/layout/AppShell';
 import { LoginScreen } from '../features/auth/LoginScreen';
 import { WelcomeScreen } from '../features/welcome/WelcomeScreen';
@@ -35,13 +35,15 @@ export function AppRouter() {
           <Route element={<RequireRole role="family" />}>
             <Route path="/home" element={<HomeScreen />} />
             <Route path="/calendar" element={<CalendarScreen />} />
-            <Route path="/calendar/add" element={<CalendarAddActivityScreen />} />
-            <Route path="/tasks" element={<TasksScreen />} />
             <Route path="/alerts" element={<AlertsScreen />} />
             <Route path="/stock" element={<StockScreen />} />
             <Route path="/reports" element={<ReportsScreen />} />
             <Route path="/reports/:reportId" element={<ReportDetailScreen />} />
             <Route path="/profile" element={<ProfileScreen />} />
+            <Route element={<RequireCoordinator />}>
+              <Route path="/calendar/add" element={<CalendarAddActivityScreen />} />
+              <Route path="/tasks" element={<TasksScreen />} />
+            </Route>
           </Route>
 
           <Route element={<RequireRole role="caregiver" />}>
