@@ -8,8 +8,9 @@ import { Button } from '../../components/forms/Button';
 import { ScreenHeader } from '../../components/layout/ScreenHeader';
 import type { Task } from '../../types/domain';
 import { useModalScrollLock } from '../../hooks/useModalScrollLock';
+import { careNetwork, CAROLINA_MEMBER_ID, getCareMemberName } from '../../data/mockData';
 
-const RESPONSIBLE_OPTIONS = ['Carolina', 'Pedro'] as const;
+const RESPONSIBLE_OPTIONS = careNetwork.filter((member) => member.tipo === 'caregiver');
 
 export function TasksScreen() {
   const navigate = useNavigate();
@@ -17,7 +18,7 @@ export function TasksScreen() {
   const [taskFeedback, setTaskFeedback] = useState('');
   const [detailTaskId, setDetailTaskId] = useState<string | null>(null);
   const [isResponsibleSelectorOpen, setIsResponsibleSelectorOpen] = useState(false);
-  const [responsibleSelection, setResponsibleSelection] = useState<(typeof RESPONSIBLE_OPTIONS)[number]>('Carolina');
+  const [responsibleSelection, setResponsibleSelection] = useState(CAROLINA_MEMBER_ID);
   const [detailFeedback, setDetailFeedback] = useState('');
   const isModalOpen = detailTaskId !== null;
 
@@ -57,12 +58,12 @@ export function TasksScreen() {
 
   const handleRequestConfirmation = (task: Task) => {
     requestTaskConfirmation(task.id);
-    pushFeedback(`Se solicitó confirmación a ${task.responsable}`);
+    pushFeedback(`Se solicitó confirmación a ${getCareMemberName(task.responsableId)}`);
   };
 
   const openResponsibleSelector = () => {
     if (!detailTask) return;
-    setResponsibleSelection(detailTask.responsable === 'Pedro' ? 'Pedro' : 'Carolina');
+    setResponsibleSelection(detailTask.responsableId);
     setIsResponsibleSelectorOpen(true);
   };
 
@@ -91,7 +92,7 @@ export function TasksScreen() {
           onContactCaregiver={(task) =>
             navigate('/messages', {
               state: {
-                conversation: task.responsable,
+                conversation: getCareMemberName(task.responsableId),
                 compose: true,
               },
             })
@@ -130,7 +131,7 @@ export function TasksScreen() {
               </div>
               <div>
                 <dt>Responsable</dt>
-                <dd>{detailTask.responsable}</dd>
+                <dd>{getCareMemberName(detailTask.responsableId)}</dd>
               </div>
             </dl>
 
@@ -141,19 +142,19 @@ export function TasksScreen() {
             {isResponsibleSelectorOpen ? (
               <div className="task-modal-sheet__responsible-selector">
                 <p className="task-modal-sheet__responsible-title">Cambiar responsable</p>
-                <p className="task-modal-sheet__helper">{`Responsable actual: ${detailTask.responsable}`}</p>
+                <p className="task-modal-sheet__helper">{`Responsable actual: ${getCareMemberName(detailTask.responsableId)}`}</p>
 
                 <div className="task-modal-sheet__responsible-options" role="radiogroup" aria-label="Seleccionar responsable">
                   {RESPONSIBLE_OPTIONS.map((responsible) => (
-                    <label key={responsible} className="task-modal-sheet__responsible-option">
+                    <label key={responsible.id} className="task-modal-sheet__responsible-option">
                       <input
                         type="radio"
                         name="responsable-tarea"
-                        value={responsible}
-                        checked={responsibleSelection === responsible}
-                        onChange={() => setResponsibleSelection(responsible)}
+                        value={responsible.id}
+                        checked={responsibleSelection === responsible.id}
+                        onChange={() => setResponsibleSelection(responsible.id)}
                       />
-                      <span>{responsible}</span>
+                      <span>{responsible.nombre}</span>
                     </label>
                   ))}
                 </div>
@@ -187,7 +188,7 @@ export function TasksScreen() {
                 disabled={detailTask.estado === 'confirmada' || detailTask.estado === 'pendiente'}
               >
                 {detailTask.estado === 'confirmada'
-                  ? 'Confirmada por cuidadora'
+                  ? 'Confirmada por responsable'
                   : detailTask.estado === 'pendiente'
                     ? 'Confirmación solicitada'
                     : 'Solicitar confirmación'}
@@ -230,7 +231,7 @@ function getStatusBadgeVariant(status: Task['estado']) {
 }
 
 function getStatusUpdateText(task: Task) {
-  if (task.estado === 'confirmada') return 'Confirmada por la cuidadora.';
-  if (task.estado === 'pendiente') return 'Solicitud de confirmación enviada a la cuidadora.';
-  return 'Aún no confirmada por la cuidadora.';
+  if (task.estado === 'confirmada') return 'Confirmada por la persona responsable.';
+  if (task.estado === 'pendiente') return 'Solicitud de confirmación enviada a la persona responsable.';
+  return 'Aún no confirmada por la persona responsable.';
 }

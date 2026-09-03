@@ -22,7 +22,7 @@ export const CONVERSATIONS: Conversation[] = [
   {
     id: 'conv-red-juan',
     titulo: 'Red de cuidado de Juan',
-    subtitulo: 'María, Juan, Carolina y Pedro',
+    subtitulo: 'María, Diego, Carolina y Pedro',
     ultimoMensaje: 'Carolina confirmó la medicación de la mañana.',
     hora: 'Hace 10 min',
     estado: 'nuevo',
@@ -64,7 +64,7 @@ export const CONVERSATION_THREADS: Record<string, ConversationMessage[]> = {
     },
     {
       id: 'g-msg-3',
-      remitente: 'Juan',
+      remitente: 'Diego',
       tipoRemitente: 'red',
       texto: 'Perfecto, yo paso a comprar los pañales.',
       hora: '08:25',

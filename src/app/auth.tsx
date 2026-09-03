@@ -1,53 +1,54 @@
 import { createContext, useContext, useMemo, useState, type ReactNode } from 'react';
 import { Navigate, Outlet, useLocation } from 'react-router-dom';
-import { demoCredentials } from '../data/mockData';
+import { demoUsers } from '../data/mockData';
+import type { DemoUser, UserRole } from '../types/domain';
 
-const AUTH_STORAGE_KEY = 'cureally:isAuthenticated';
+const AUTH_STORAGE_KEY = 'cureally:demoSession';
 
 interface AuthContextValue {
   isAuthenticated: boolean;
-  login: (email: string, password: string) => boolean;
-  loginDemoMode: () => void;
+  currentUser: DemoUser | null;
+  loginAs: (userId: string) => boolean;
   logout: () => void;
 }
 
 const AuthContext = createContext<AuthContextValue | null>(null);
 
-function readStoredAuth(): boolean {
+function readStoredUser(): DemoUser | null {
   if (typeof window === 'undefined') {
-    return false;
+    return null;
   }
 
-  return window.localStorage.getItem(AUTH_STORAGE_KEY) === 'true';
+  const storedUserId = window.localStorage.getItem(AUTH_STORAGE_KEY);
+  return demoUsers.find((user) => user.id === storedUserId) ?? null;
 }
 
 export function AuthProvider({ children }: { children: ReactNode }) {
-  const [isAuthenticated, setIsAuthenticated] = useState<boolean>(() => readStoredAuth());
+  const [currentUser, setCurrentUser] = useState<DemoUser | null>(() => readStoredUser());
 
-  const persist = (value: boolean) => {
-    setIsAuthenticated(value);
-    window.localStorage.setItem(AUTH_STORAGE_KEY, String(value));
+  const persist = (user: DemoUser | null) => {
+    setCurrentUser(user);
+    if (user) {
+      window.localStorage.setItem(AUTH_STORAGE_KEY, user.id);
+    } else {
+      window.localStorage.removeItem(AUTH_STORAGE_KEY);
+    }
   };
 
   const value = useMemo<AuthContextValue>(
     () => ({
-      isAuthenticated,
-      login: (email, password) => {
-        const isValid = email.toLowerCase() === demoCredentials.email && password === demoCredentials.password;
-        if (isValid) {
-          persist(true);
-        }
-
-        return isValid;
-      },
-      loginDemoMode: () => {
-        persist(true);
+      isAuthenticated: Boolean(currentUser),
+      currentUser,
+      loginAs: (userId) => {
+        const user = demoUsers.find((candidate) => candidate.id === userId) ?? null;
+        persist(user);
+        return Boolean(user);
       },
       logout: () => {
-        persist(false);
+        persist(null);
       },
     }),
-    [isAuthenticated],
+    [currentUser],
   );
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
@@ -68,6 +69,20 @@ export function RequireAuth() {
 
   if (!isAuthenticated) {
     return <Navigate to="/login" state={{ from: location.pathname }} replace />;
+  }
+
+  return <Outlet />;
+}
+
+export function RequireRole({ role }: { role: UserRole }) {
+  const { currentUser } = useAuth();
+
+  if (!currentUser) {
+    return <Navigate to="/login" replace />;
+  }
+
+  if (currentUser.role !== role) {
+    return <Navigate to={currentUser.role === 'caregiver' ? '/caregiver/home' : '/home'} replace />;
   }
 
   return <Outlet />;

@@ -1,13 +1,12 @@
 import { useAuth } from '../../app/auth';
 import { useNavigate } from 'react-router-dom';
 import { useCareStore } from '../../app/care-store';
-import { demoCredentials } from '../../data/mockData';
 import { Button } from '../../components/forms/Button';
 import { Card } from '../../components/cards/Card';
 import { ScreenHeader } from '../../components/layout/ScreenHeader';
 
 export function ProfileScreen() {
-  const { logout } = useAuth();
+  const { logout, currentUser } = useAuth();
   const navigate = useNavigate();
   const { patient } = useCareStore();
 
@@ -21,12 +20,12 @@ export function ProfileScreen() {
       <ScreenHeader title="Mi perfil" subtitle="Información de tu cuenta y preferencias" />
 
       <Card>
-        <h3 className="card-title">María</h3>
+        <h3 className="card-title">{currentUser?.nombre ?? 'María'}</h3>
         <p className="profile-user-role">Familiar responsable</p>
         <dl className="info-list">
           <div>
             <dt>Email</dt>
-            <dd>{demoCredentials.email}</dd>
+            <dd>{currentUser?.email ?? 'maria@cureally.com'}</dd>
           </div>
           <div>
             <dt>Paciente asociado</dt>

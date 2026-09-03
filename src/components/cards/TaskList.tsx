@@ -2,6 +2,7 @@ import type { Task } from '../../types/domain';
 import { Badge } from '../feedback/Badge';
 import { Button } from '../forms/Button';
 import { Card } from './Card';
+import { getCareMemberName } from '../../data/mockData';
 
 interface TaskListProps {
   tasks: Task[];
@@ -22,7 +23,7 @@ export function TaskList({ tasks, onRequestConfirmation, onViewDetail, onContact
             </Badge>
           </div>
           <p className="list-card__meta">{formatTaskTiming(task)}</p>
-          <p className="list-card__meta">Responsable: {task.responsable}</p>
+          <p className="list-card__meta">Responsable: {getCareMemberName(task.responsableId)}</p>
 
           <div className="task-card__actions">
             <Button
@@ -32,7 +33,7 @@ export function TaskList({ tasks, onRequestConfirmation, onViewDetail, onContact
               disabled={task.estado === 'confirmada' || task.estado === 'pendiente'}
             >
               {task.estado === 'confirmada'
-                ? 'Confirmada por cuidadora'
+                ? 'Confirmada por responsable'
                 : task.estado === 'pendiente'
                   ? 'Confirmación solicitada'
                   : 'Solicitar confirmación'}

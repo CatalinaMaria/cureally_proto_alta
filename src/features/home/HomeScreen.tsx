@@ -1,7 +1,8 @@
 import { type KeyboardEvent, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useCareStore } from '../../app/care-store';
-import { careNetwork, caregiverName } from '../../data/mockData';
+import { getCareMember } from '../../data/mockData';
+import { useAuth } from '../../app/auth';
 import { ActivityList } from '../../components/cards/ActivityList';
 import { Card } from '../../components/cards/Card';
 import { EstadoHoyCard } from '../../components/cards/EstadoHoyCard';
@@ -12,6 +13,7 @@ import juanAvatar from '../../assets/juan-perez-avatar.png';
 
 export function HomeScreen() {
   const navigate = useNavigate();
+  const { currentUser } = useAuth();
   const { patient, tasks, alerts, activities } = useCareStore();
 
   const today = '2026-05-13';
@@ -24,7 +26,7 @@ export function HomeScreen() {
   const completedTasks = tasks.filter((task) => task.estado === 'confirmada').length;
   const activeAlerts = alerts.filter((alert) => !alert.confirmada).length;
   const nextActivity = todayActivities[0] ?? null;
-  const careCoordinator = careNetwork.find((member) => member.rol.toLowerCase().includes('cuidadora'));
+  const nextResponsible = getCareMember(nextActivity?.responsableId);
 
   const quickLinks: QuickAccessItem[] = [
     {
@@ -70,7 +72,7 @@ export function HomeScreen() {
 
   return (
     <section className="screen home-screen">
-      <ScreenHeader title="Inicio" subtitle={`Hola, ${caregiverName}`} />
+      <ScreenHeader title="Inicio" subtitle={`Hola, ${currentUser?.nombre ?? 'María'}`} />
 
       <Card className="home-patient-card">
         <div
@@ -100,7 +102,7 @@ export function HomeScreen() {
             </p>
             <p className="home-patient-card__detail">
               <span className="home-patient-card__detail-label">Responsable:</span>{' '}
-              {careCoordinator ? `${careCoordinator.nombre}, ${careCoordinator.rol.toLowerCase()}` : 'Equipo de cuidado'}
+              {nextResponsible ? `${nextResponsible.nombre}, ${nextResponsible.rol.toLowerCase()}` : 'Equipo de cuidado'}
             </p>
           </div>
         </div>
@@ -124,7 +126,6 @@ export function HomeScreen() {
           activities={todayActivities}
           emptyMessage="No hay actividades para hoy."
           enableDetail
-          responsiblePerson={careCoordinator ? `${careCoordinator.nombre}, ${careCoordinator.rol.toLowerCase()}` : 'Equipo de cuidado'}
           onOpenCalendar={() => navigate('/calendar')}
         />
       </section>

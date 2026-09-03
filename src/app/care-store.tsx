@@ -12,7 +12,7 @@ interface CareStoreValue {
   setSelectedDate: (date: string) => void;
   addActivity: (activity: Omit<Activity, 'id' | 'estado'>) => void;
   requestTaskConfirmation: (taskId: string) => void;
-  updateTaskResponsible: (taskId: string, responsable: string) => void;
+  updateTaskResponsible: (taskId: string, responsableId: string) => void;
   confirmAlert: (alertId: string) => void;
 }
 
@@ -49,14 +49,14 @@ export function CareStoreProvider({ children }: { children: ReactNode }) {
           ),
         );
       },
-      updateTaskResponsible: (taskId, responsable) => {
+      updateTaskResponsible: (taskId, responsableId) => {
         setTasks((prev) =>
           prev.map((task) =>
             task.id === taskId
               ? {
                   ...task,
-                  responsable,
-                  ultimaActualizacion: `Responsable actualizado a ${responsable}.`,
+                  responsableId,
+                  ultimaActualizacion: 'Responsable actualizado por María.',
                 }
               : task,
           ),

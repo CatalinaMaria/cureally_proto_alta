@@ -3,24 +3,27 @@ import type { Activity } from '../../types/domain';
 import { Card } from './Card';
 import { Button } from '../forms/Button';
 import { useModalScrollLock } from '../../hooks/useModalScrollLock';
+import { getCareMember, getCareMemberName } from '../../data/mockData';
 
 interface ProximaActividadCardProps {
   activity: Activity | null;
-  responsiblePerson?: string;
   note?: string;
   onOpenCalendar?: () => void;
 }
 
 export function ProximaActividadCard({
   activity,
-  responsiblePerson = 'Carolina, cuidadora',
   note = 'Administrar después del desayuno',
   onOpenCalendar,
 }: ProximaActividadCardProps) {
   const [isDetailOpen, setIsDetailOpen] = useState(false);
   const [requestSent, setRequestSent] = useState(false);
 
-  const responsibleName = responsiblePerson.split(',')[0]?.trim() || 'la cuidadora';
+  const responsibleMember = getCareMember(activity?.responsableId);
+  const responsiblePerson = responsibleMember
+    ? `${responsibleMember.nombre}, ${responsibleMember.rol.toLowerCase()}`
+    : 'Sin asignar';
+  const responsibleName = getCareMemberName(activity?.responsableId);
   const statusLabel = 'Sin confirmar';
 
   const closeDetail = () => {

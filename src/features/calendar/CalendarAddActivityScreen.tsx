@@ -5,6 +5,7 @@ import { Button } from '../../components/forms/Button';
 import { Card } from '../../components/cards/Card';
 import { ScreenHeader } from '../../components/layout/ScreenHeader';
 import type { ActivityCategory, ActivityDuration, ActivityRecurrence } from '../../types/domain';
+import { careNetwork, CAROLINA_MEMBER_ID } from '../../data/mockData';
 
 interface AddActivityForm {
   tipo: ActivityCategory;
@@ -12,7 +13,7 @@ interface AddActivityForm {
   hora: string;
   minuto: string;
   periodo: 'am' | 'pm';
-  responsable: string;
+  responsableId: string;
   repeticion: ActivityRecurrence;
   duracion: ActivityDuration;
   fechaFinalizacion: string;
@@ -25,7 +26,7 @@ const DEFAULT_FORM: AddActivityForm = {
   hora: '04',
   minuto: '00',
   periodo: 'pm',
-  responsable: 'Carolina',
+  responsableId: CAROLINA_MEMBER_ID,
   repeticion: 'una_vez',
   duracion: 'indefinida',
   fechaFinalizacion: '',
@@ -38,7 +39,7 @@ const NAME_PLACEHOLDERS: Record<ActivityCategory, string> = {
   tarea: 'Ej: Preparar almuerzo',
 };
 
-const RESPONSIBLE_OPTIONS = ['Carolina', 'Pedro', 'María'];
+const RESPONSIBLE_OPTIONS = careNetwork;
 const HOUR_OPTIONS = Array.from({ length: 12 }, (_, i) => String(i + 1).padStart(2, '0'));
 const MINUTE_OPTIONS = Array.from({ length: 12 }, (_, i) => String(i * 5).padStart(2, '0'));
 
@@ -60,7 +61,7 @@ export function CalendarAddActivityScreen() {
       hora: to24Hour(form.hora, form.minuto, form.periodo),
       titulo: form.nombre.trim(),
       categoria: form.tipo,
-      responsable: form.responsable.trim() || 'Carolina',
+      responsableId: form.responsableId,
       nota: form.nota.trim() || undefined,
       repeticion: form.repeticion,
       duracion: recurrente ? form.duracion : undefined,
@@ -154,12 +155,12 @@ export function CalendarAddActivityScreen() {
             <span className="field__label">Responsable</span>
             <select
               className="field__input"
-              value={form.responsable}
-              onChange={(event) => setForm((prev) => ({ ...prev, responsable: event.target.value }))}
+              value={form.responsableId}
+              onChange={(event) => setForm((prev) => ({ ...prev, responsableId: event.target.value }))}
             >
               {RESPONSIBLE_OPTIONS.map((person) => (
-                <option key={person} value={person}>
-                  {person}
+                <option key={person.id} value={person.id}>
+                  {person.nombre} · {person.rol}
                 </option>
               ))}
             </select>

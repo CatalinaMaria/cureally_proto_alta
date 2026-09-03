@@ -3,6 +3,17 @@ export interface DemoCredentials {
   password: string;
 }
 
+export type UserRole = 'family' | 'caregiver';
+
+export interface DemoUser {
+  id: string;
+  nombre: string;
+  email: string;
+  role: UserRole;
+  careMemberId: string;
+  descripcion: string;
+}
+
 export interface Patient {
   id: string;
   nombre: string;
@@ -15,6 +26,7 @@ export interface CareMember {
   id: string;
   nombre: string;
   rol: string;
+  tipo: 'family' | 'caregiver';
 }
 
 export type ActivityCategory = 'medicacion' | 'consulta' | 'tarea';
@@ -29,7 +41,7 @@ export interface Activity {
   titulo: string;
   categoria: ActivityCategory;
   estado: ActivityStatus;
-  responsable?: string;
+  responsableId?: string;
   nota?: string;
   repeticion?: ActivityRecurrence;
   duracion?: ActivityDuration;
@@ -43,7 +55,7 @@ export interface Task {
   id: string;
   titulo: string;
   estado: TaskStatus;
-  responsable: string;
+  responsableId: string;
   franja?: TaskShift;
   hora?: string;
   descripcion?: string;
@@ -61,6 +73,7 @@ export interface Alert {
   hora: string;
   severidad: AlertSeverity;
   confirmada: boolean;
+  responsableId?: string;
 }
 
 export interface DailyReport {

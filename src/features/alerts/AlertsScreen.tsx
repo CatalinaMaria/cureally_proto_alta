@@ -5,7 +5,7 @@ import { AlertList } from '../../components/cards/AlertList';
 import { SectionTitle } from '../../components/feedback/SectionTitle';
 import { Button } from '../../components/forms/Button';
 import { ScreenHeader } from '../../components/layout/ScreenHeader';
-import { careNetwork } from '../../data/mockData';
+import { CAROLINA_MEMBER_ID, getCareMemberName } from '../../data/mockData';
 import { useModalScrollLock } from '../../hooks/useModalScrollLock';
 
 export function AlertsScreen() {
@@ -13,11 +13,9 @@ export function AlertsScreen() {
   const { alerts, dailyReport } = useCareStore();
   const [feedback, setFeedback] = useState('');
   const [isReportOpen, setIsReportOpen] = useState(false);
+  const [reportAuthorId, setReportAuthorId] = useState(CAROLINA_MEMBER_ID);
 
   useModalScrollLock(isReportOpen);
-
-  const caregiver = careNetwork.find((member) => member.rol.toLowerCase().includes('cuidadora'));
-  const caregiverName = caregiver?.nombre ?? 'Carolina';
 
   const pushFeedback = (message: string) => {
     setFeedback(message);
@@ -37,7 +35,8 @@ export function AlertsScreen() {
     return () => window.removeEventListener('keydown', onEscape);
   }, [isReportOpen]);
 
-  const openReportSheet = () => {
+  const openReportSheet = (responsableId?: string) => {
+    setReportAuthorId(responsableId ?? CAROLINA_MEMBER_ID);
     setIsReportOpen(true);
   };
 
@@ -52,17 +51,17 @@ export function AlertsScreen() {
 
       <AlertList
         alerts={alerts}
-        onRequestConfirmation={() => pushFeedback('Solicitud enviada a Carolina')}
-        onContactCaregiver={() =>
+        onRequestConfirmation={(alert) => pushFeedback(`Solicitud enviada a ${getCareMemberName(alert.responsableId)}`)}
+        onContactCaregiver={(alert) =>
           navigate('/messages', {
             state: {
-              conversation: caregiverName,
+              conversation: getCareMemberName(alert.responsableId),
               compose: true,
             },
           })
         }
         onViewCalendar={() => navigate('/calendar')}
-        onViewReport={openReportSheet}
+        onViewReport={(alert) => openReportSheet(alert.responsableId)}
         onViewStock={() => navigate('/stock')}
       />
 
@@ -82,7 +81,7 @@ export function AlertsScreen() {
             onClick={(event) => event.stopPropagation()}
           >
             <div className="activity-modal-sheet__handle" aria-hidden="true" />
-            <h4 id="informe-alerta-titulo" className="activity-modal-sheet__title">{`Informe diario de ${caregiverName}`}</h4>
+            <h4 id="informe-alerta-titulo" className="activity-modal-sheet__title">{`Informe diario de ${getCareMemberName(reportAuthorId)}`}</h4>
 
             <p className="muted-text">Fecha: {formatDate(dailyReport.fecha)}</p>
             <p className="task-modal-sheet__text task-modal-sheet__report-text">{dailyReport.observaciones}</p>

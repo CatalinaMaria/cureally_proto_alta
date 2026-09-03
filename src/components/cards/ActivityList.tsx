@@ -4,12 +4,12 @@ import { Badge } from '../feedback/Badge';
 import { Button } from '../forms/Button';
 import { Card } from './Card';
 import { useModalScrollLock } from '../../hooks/useModalScrollLock';
+import { getCareMember, getCareMemberName } from '../../data/mockData';
 
 interface ActivityListProps {
   activities: Activity[];
   emptyMessage?: string;
   enableDetail?: boolean;
-  responsiblePerson?: string;
   onOpenCalendar?: () => void;
 }
 
@@ -17,7 +17,6 @@ export function ActivityList({
   activities,
   emptyMessage = 'No hay actividades registradas.',
   enableDetail = false,
-  responsiblePerson = 'Carolina, cuidadora',
   onOpenCalendar,
 }: ActivityListProps) {
   const [selectedActivity, setSelectedActivity] = useState<Activity | null>(null);
@@ -47,8 +46,11 @@ export function ActivityList({
     return <p className="muted-text">{emptyMessage}</p>;
   }
 
-  const selectedResponsible = selectedActivity?.responsable ?? responsiblePerson;
-  const selectedResponsibleName = selectedResponsible.split(',')[0]?.trim() || 'la cuidadora';
+  const selectedResponsibleMember = getCareMember(selectedActivity?.responsableId);
+  const selectedResponsible = selectedResponsibleMember
+    ? `${selectedResponsibleMember.nombre}, ${selectedResponsibleMember.rol.toLowerCase()}`
+    : 'Sin asignar';
+  const selectedResponsibleName = getCareMemberName(selectedActivity?.responsableId);
   const selectedStatusLabel = selectedActivity?.estado === 'completada' ? 'Confirmada' : 'Sin confirmar';
   const isSelectedConfirmed = selectedActivity?.estado === 'completada';
 
@@ -122,7 +124,7 @@ export function ActivityList({
             <p className="activity-modal-sheet__note">{selectedActivity.nota ?? getActivityNote(selectedActivity)}</p>
             <div className="activity-modal-sheet__actions">
               <Button variant="primary" onClick={() => setRequestSent(true)} disabled={isSelectedConfirmed}>
-                {isSelectedConfirmed ? 'Confirmada por cuidadora' : 'Solicitar confirmación'}
+                {isSelectedConfirmed ? 'Confirmada por responsable' : 'Solicitar confirmación'}
               </Button>
               <Button
                 variant="secondary"
