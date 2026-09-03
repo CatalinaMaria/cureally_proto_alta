@@ -4,6 +4,7 @@ export const MARIA_MEMBER_ID = 'cm-maria';
 export const CAROLINA_MEMBER_ID = 'cm-carolina';
 export const PEDRO_MEMBER_ID = 'cm-pedro';
 export const DIEGO_MEMBER_ID = 'cm-diego';
+export const DEMO_TODAY = '2026-05-13';
 
 export const patient: Patient = {
   id: 'patient-juan',
@@ -72,7 +73,7 @@ export const initialActivities: Activity[] = [
     titulo: 'Aspirina 100 mg',
     categoria: 'medicacion',
     estado: 'pendiente',
-    responsableId: CAROLINA_MEMBER_ID,
+    responsableId: PEDRO_MEMBER_ID,
   },
   {
     id: 'act-3',
@@ -118,7 +119,7 @@ export const initialTasks: Task[] = [
     titulo: 'Acompañar a consulta médica',
     estado: 'pendiente',
     franja: 'tarde',
-    responsableId: CAROLINA_MEMBER_ID,
+    responsableId: PEDRO_MEMBER_ID,
     descripcion: 'Coordinar traslado y acompañamiento para el control médico de la tarde.',
     ultimaActualizacion: 'Se solicitó confirmación a la cuidadora.',
   },
@@ -176,7 +177,10 @@ export const initialAlerts: Alert[] = [
 ];
 
 export const initialDailyReport: DailyReport = {
+  id: 'report-initial-carolina',
   fecha: '2026-05-13',
+  cuidadorId: CAROLINA_MEMBER_ID,
+  turno: 'manana',
   observaciones: 'Paciente con buen ánimo durante la mañana.',
   checks: ['Medicación de la mañana confirmada', 'Hidratación verificada', 'Descanso posterior al almuerzo'],
 };

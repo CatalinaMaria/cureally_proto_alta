@@ -1,6 +1,6 @@
 import { createContext, useContext, useMemo, useState, type ReactNode } from 'react';
 import { initialActivities, initialAlerts, initialDailyReport, initialTasks, patient } from '../data/mockData';
-import type { Activity, Alert, DailyReport, Patient, Task } from '../types/domain';
+import type { Activity, Alert, CareUpdate, DailyReport, MedicationRecord, Patient, Task, TaskShift } from '../types/domain';
 
 interface CareStoreValue {
   patient: Patient;
@@ -8,11 +8,18 @@ interface CareStoreValue {
   tasks: Task[];
   alerts: Alert[];
   dailyReport: DailyReport;
+  caregiverReports: DailyReport[];
+  medicationRecords: MedicationRecord[];
+  careUpdates: CareUpdate[];
   selectedDate: string;
   setSelectedDate: (date: string) => void;
   addActivity: (activity: Omit<Activity, 'id' | 'estado'>) => void;
   requestTaskConfirmation: (taskId: string) => void;
   updateTaskResponsible: (taskId: string, responsableId: string) => void;
+  completeTask: (taskId: string, caregiverId: string) => boolean;
+  recordMedication: (activityId: string, caregiverId: string) => boolean;
+  addCareUpdate: (caregiverId: string, texto: string) => void;
+  submitDailyReport: (caregiverId: string, turno: TaskShift, observaciones: string, checks: string[]) => void;
   confirmAlert: (alertId: string) => void;
 }
 
@@ -23,6 +30,9 @@ export function CareStoreProvider({ children }: { children: ReactNode }) {
   const [tasks, setTasks] = useState<Task[]>(initialTasks);
   const [alerts, setAlerts] = useState<Alert[]>(initialAlerts);
   const [dailyReport] = useState<DailyReport>(initialDailyReport);
+  const [caregiverReports, setCaregiverReports] = useState<DailyReport[]>([]);
+  const [medicationRecords, setMedicationRecords] = useState<MedicationRecord[]>([]);
+  const [careUpdates, setCareUpdates] = useState<CareUpdate[]>([]);
   const [selectedDate, setSelectedDate] = useState<string>('2026-05-13');
 
   const value = useMemo<CareStoreValue>(
@@ -32,6 +42,9 @@ export function CareStoreProvider({ children }: { children: ReactNode }) {
       tasks,
       alerts,
       dailyReport,
+      caregiverReports,
+      medicationRecords,
+      careUpdates,
       selectedDate,
       setSelectedDate,
       addActivity: (activity) => {
@@ -62,13 +75,92 @@ export function CareStoreProvider({ children }: { children: ReactNode }) {
           ),
         );
       },
+      completeTask: (taskId, caregiverId) => {
+        const task = tasks.find((candidate) => candidate.id === taskId);
+        if (!task || task.responsableId !== caregiverId || task.estado === 'confirmada') return false;
+
+        setTasks((prev) =>
+          prev.map((candidate) =>
+            candidate.id === taskId
+              ? {
+                  ...candidate,
+                  estado: 'confirmada',
+                  completadaPorId: caregiverId,
+                  completadaEn: 'Ahora',
+                  ultimaActualizacion: 'Marcada como realizada por la persona responsable.',
+                }
+              : candidate,
+          ),
+        );
+        return true;
+      },
+      recordMedication: (activityId, caregiverId) => {
+        const activity = activities.find((candidate) => candidate.id === activityId);
+        if (
+          !activity ||
+          activity.categoria !== 'medicacion' ||
+          activity.responsableId !== caregiverId ||
+          activity.estado === 'completada'
+        ) {
+          return false;
+        }
+
+        setActivities((prev) =>
+          prev.map((candidate) =>
+            candidate.id === activityId ? { ...candidate, estado: 'completada' } : candidate,
+          ),
+        );
+        setMedicationRecords((prev) => [
+          {
+            id: `med-record-${Date.now()}`,
+            activityId,
+            cuidadorId: caregiverId,
+            registradaEn: 'Ahora',
+          },
+          ...prev,
+        ]);
+        setAlerts((prev) =>
+          prev.map((alert) =>
+            alert.tipo === 'falta_confirmacion' && alert.responsableId === caregiverId
+              ? { ...alert, confirmada: true }
+              : alert,
+          ),
+        );
+        return true;
+      },
+      addCareUpdate: (caregiverId, texto) => {
+        const normalizedText = texto.trim();
+        if (!normalizedText) return;
+        setCareUpdates((prev) => [
+          {
+            id: `update-${Date.now()}`,
+            cuidadorId: caregiverId,
+            texto: normalizedText,
+            registradaEn: 'Ahora',
+          },
+          ...prev,
+        ]);
+      },
+      submitDailyReport: (caregiverId, turno, observaciones, checks) => {
+        setCaregiverReports((prev) => [
+          {
+            id: `report-${Date.now()}`,
+            fecha: selectedDate,
+            cuidadorId: caregiverId,
+            turno,
+            observaciones: observaciones.trim(),
+            checks,
+          },
+          ...prev,
+        ]);
+      },
       confirmAlert: (alertId) => {
         setAlerts((prev) =>
           prev.map((alert) => (alert.id === alertId ? { ...alert, confirmada: true } : alert)),
         );
       },
     }),
-    [activities, alerts, dailyReport, selectedDate, tasks],
+    [activities, alerts, careUpdates, caregiverReports, dailyReport, medicationRecords, selectedDate, tasks],
   );
 
   return <CareStoreContext.Provider value={value}>{children}</CareStoreContext.Provider>;

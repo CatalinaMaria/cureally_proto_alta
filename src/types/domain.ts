@@ -60,6 +60,8 @@ export interface Task {
   hora?: string;
   descripcion?: string;
   ultimaActualizacion?: string;
+  completadaPorId?: string;
+  completadaEn?: string;
 }
 
 export type AlertSeverity = 'alta' | 'media' | 'baja';
@@ -77,9 +79,26 @@ export interface Alert {
 }
 
 export interface DailyReport {
+  id: string;
   fecha: string;
+  cuidadorId: string;
+  turno: TaskShift;
   observaciones: string;
   checks: string[];
+}
+
+export interface MedicationRecord {
+  id: string;
+  activityId: string;
+  cuidadorId: string;
+  registradaEn: string;
+}
+
+export interface CareUpdate {
+  id: string;
+  cuidadorId: string;
+  texto: string;
+  registradaEn: string;
 }
 
 export interface AppState {

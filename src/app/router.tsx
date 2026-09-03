@@ -16,6 +16,9 @@ import { ReportDetailScreen } from '../features/reports/ReportDetailScreen';
 import { StockScreen } from '../features/stock/StockScreen';
 import { PatientProfileScreen } from '../features/patient/PatientProfileScreen';
 import { CaregiverHomeScreen } from '../features/caregiver/CaregiverHomeScreen';
+import { CaregiverTasksScreen } from '../features/caregiver/CaregiverTasksScreen';
+import { CaregiverLogScreen } from '../features/caregiver/CaregiverLogScreen';
+import { CaregiverProfileScreen } from '../features/caregiver/CaregiverProfileScreen';
 
 export function AppRouter() {
   return (
@@ -43,6 +46,9 @@ export function AppRouter() {
 
           <Route element={<RequireRole role="caregiver" />}>
             <Route path="/caregiver/home" element={<CaregiverHomeScreen />} />
+            <Route path="/caregiver/tasks" element={<CaregiverTasksScreen />} />
+            <Route path="/caregiver/log" element={<CaregiverLogScreen />} />
+            <Route path="/caregiver/profile" element={<CaregiverProfileScreen />} />
           </Route>
         </Route>
       </Route>

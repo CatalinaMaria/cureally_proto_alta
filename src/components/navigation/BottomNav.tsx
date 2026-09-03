@@ -11,7 +11,9 @@ const familyNavItems = [
 
 const caregiverNavItems = [
   { to: '/caregiver/home', label: 'Inicio', icon: 'home' as AppIconName },
+  { to: '/caregiver/tasks', label: 'Tareas', icon: 'tasks' as AppIconName },
   { to: '/messages', label: 'Mensajes', icon: 'messages' as AppIconName },
+  { to: '/caregiver/profile', label: 'Perfil', icon: 'profile' as AppIconName },
 ];
 
 export function BottomNav() {

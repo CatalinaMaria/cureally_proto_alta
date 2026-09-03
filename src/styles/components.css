@@ -696,6 +696,132 @@
   color: var(--text-secondary);
 }
 
+.caregiver-home {
+  gap: var(--space-6);
+}
+
+.caregiver-eyebrow,
+.family-shared-record__label {
+  margin: 0 0 var(--space-1);
+  color: var(--accent-strong);
+  font-size: var(--size-12);
+  font-weight: 600;
+}
+
+.caregiver-patient-card {
+  background: linear-gradient(145deg, #eaf7f4 0%, #f8fcfb 100%);
+  border-color: #acd8d2;
+}
+
+.caregiver-patient-card__row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-3);
+}
+
+.caregiver-patient-card__row h2 {
+  margin: 0;
+  font-size: var(--size-20);
+}
+
+.caregiver-patient-card__row p {
+  color: var(--text-secondary);
+  font-size: var(--size-12);
+}
+
+.caregiver-next-card {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+  border-color: #dfc98f;
+  background: linear-gradient(150deg, #fffdf7 0%, #fff5df 100%);
+}
+
+.caregiver-feedback {
+  margin: 0;
+  padding: var(--space-3);
+  border: 1px solid #b9ddd8;
+  border-radius: var(--radius-sm);
+  background: var(--accent-soft);
+  color: var(--accent-strong);
+  font-size: var(--size-12);
+  font-weight: 600;
+}
+
+.caregiver-task--completed {
+  background: var(--success-soft);
+  border-color: #bfdcca;
+}
+
+.caregiver-log-tabs {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: var(--space-2);
+  padding: 4px;
+  border: 1px solid var(--border-soft);
+  border-radius: 14px;
+  background: #fffefb;
+}
+
+.caregiver-log-tabs button {
+  border: 0;
+  border-radius: 10px;
+  background: transparent;
+  padding: 9px 6px;
+  color: var(--text-secondary);
+  cursor: pointer;
+  font-size: var(--size-12);
+  font-weight: 600;
+}
+
+.caregiver-log-tabs button.is-active {
+  background: var(--accent-soft);
+  color: var(--accent-strong);
+}
+
+.caregiver-form {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+}
+
+.caregiver-checks {
+  margin: 0;
+  padding: var(--space-3);
+  border: 1px solid var(--border-soft);
+  border-radius: var(--radius-sm);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+.caregiver-checks legend {
+  padding: 0 var(--space-1);
+  color: var(--text-secondary);
+  font-size: var(--size-12);
+}
+
+.caregiver-checks label {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+}
+
+.caregiver-checks input {
+  accent-color: var(--accent);
+}
+
+.family-shared-record {
+  background: #f8fcff;
+  border-color: #d8e6ec;
+}
+
+.family-shared-record--success {
+  background: var(--success-soft);
+  border-color: #bfdcca;
+}
+
 .demo-profile-option__content small {
   font-size: 11px;
   line-height: 1.35;
