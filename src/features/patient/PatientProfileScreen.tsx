@@ -15,6 +15,7 @@ interface ImportantContact {
   rol: string;
   detalle?: string;
   accion: 'llamar' | 'conversacion';
+  conversationId?: string;
 }
 
 const importantContacts: ImportantContact[] = [
@@ -27,8 +28,9 @@ const importantContacts: ImportantContact[] = [
   {
     id: 'contact-carolina',
     nombre: 'Carolina',
-    rol: 'Cuidadora principal',
+    rol: 'Cuidadora profesional',
     accion: 'conversacion',
+    conversationId: 'conv-carolina',
   },
   {
     id: 'contact-farmacia',
@@ -58,11 +60,7 @@ export function PatientProfileScreen() {
 
   const handleContactAction = (contact: ImportantContact) => {
     if (contact.accion === 'conversacion') {
-      navigate('/messages', {
-        state: {
-          conversation: contact.nombre,
-        },
-      });
+      navigate(`/messages/${contact.conversationId ?? 'conv-red-juan'}`);
       return;
     }
 

@@ -1684,13 +1684,13 @@
   color: var(--accent-strong);
 }
 
-.message-bubble--maria {
+.message-bubble--outgoing {
   align-self: flex-end;
   border-color: #bcded8;
   background: #eefaf7;
 }
 
-.message-bubble--carolina {
+.message-bubble--incoming {
   align-self: flex-start;
 }
 

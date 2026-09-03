@@ -25,7 +25,7 @@ export function HomeScreen() {
   const pendingTasks = tasks.filter((task) => task.estado === 'sin_confirmar' || task.estado === 'pendiente').length;
   const completedTasks = tasks.filter((task) => task.estado === 'confirmada').length;
   const activeAlerts = alerts.filter((alert) => !alert.confirmada).length;
-  const nextActivity = todayActivities[0] ?? null;
+  const nextActivity = todayActivities.find((activity) => activity.estado !== 'completada') ?? null;
   const nextResponsible = getCareMember(nextActivity?.responsableId);
 
   const quickLinks: QuickAccessItem[] = [
@@ -112,7 +112,7 @@ export function HomeScreen() {
         pendientes={pendingTasks}
         completadas={completedTasks}
         alertasActivas={activeAlerts}
-        proximaActividad={todayActivities[0]?.titulo ?? 'Sin actividades'}
+        proximaActividad={nextActivity?.titulo ?? 'Sin actividades pendientes'}
       />
 
       <section className="home-section">

@@ -1,5 +1,5 @@
 import { createContext, useContext, useMemo, useState, type ReactNode } from 'react';
-import { initialActivities, initialAlerts, initialDailyReport, initialTasks, patient } from '../data/mockData';
+import { DEMO_TODAY, initialActivities, initialAlerts, initialDailyReport, initialTasks, patient } from '../data/mockData';
 import type { Activity, Alert, CareUpdate, DailyReport, MedicationRecord, Patient, Task, TaskShift } from '../types/domain';
 
 interface CareStoreValue {
@@ -69,7 +69,7 @@ export function CareStoreProvider({ children }: { children: ReactNode }) {
               ? {
                   ...task,
                   responsableId,
-                  ultimaActualizacion: 'Responsable actualizado por María.',
+                  ultimaActualizacion: 'Responsable actualizado por la familiar responsable.',
                 }
               : task,
           ),
@@ -145,7 +145,7 @@ export function CareStoreProvider({ children }: { children: ReactNode }) {
         setCaregiverReports((prev) => [
           {
             id: `report-${Date.now()}`,
-            fecha: selectedDate,
+            fecha: DEMO_TODAY,
             cuidadorId: caregiverId,
             turno,
             observaciones: observaciones.trim(),

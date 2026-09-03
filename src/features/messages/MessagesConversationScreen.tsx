@@ -54,7 +54,7 @@ function MessagesConversationContent({
         {messages.map((message) => (
           <div
             key={message.id}
-            className={`message-bubble ${message.remitente === currentUser?.nombre ? 'message-bubble--maria' : 'message-bubble--carolina'}`}
+            className={`message-bubble ${message.remitente === currentUser?.nombre ? 'message-bubble--outgoing' : 'message-bubble--incoming'}`}
           >
             {message.remitente !== currentUser?.nombre ? <p className="message-bubble__sender">{message.remitente}</p> : null}
             <p>{message.texto}</p>

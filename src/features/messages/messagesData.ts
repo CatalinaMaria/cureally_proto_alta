@@ -1,3 +1,5 @@
+import { CAROLINA_MEMBER_ID, PEDRO_MEMBER_ID } from '../../data/mockData';
+
 export type ConversationStatus = 'respondido' | 'pendiente' | 'nuevo';
 
 export interface Conversation {
@@ -31,7 +33,7 @@ export const CONVERSATIONS: Conversation[] = [
   {
     id: 'conv-carolina',
     titulo: 'Carolina',
-    subtitulo: 'Cuidadora',
+    subtitulo: 'Cuidadora profesional',
     ultimoMensaje: 'Estuvo bien, desayunó y tomó la medicación.',
     hora: 'Hace 24 min',
     estado: 'nuevo',
@@ -39,7 +41,7 @@ export const CONVERSATIONS: Conversation[] = [
   {
     id: 'conv-pedro',
     titulo: 'Pedro',
-    subtitulo: 'Cuidador',
+    subtitulo: 'Cuidador profesional',
     ultimoMensaje: 'Quedo atento para el turno de la tarde.',
     hora: 'Hace 1 h',
     estado: 'pendiente',
@@ -128,6 +130,12 @@ export function getConversationIdFromName(name?: string) {
   const target = normalizeText(name);
   const match = CONVERSATIONS.find((conversation) => normalizeText(conversation.titulo) === target);
   return match?.id ?? null;
+}
+
+export function getConversationIdForMember(memberId?: string) {
+  if (memberId === CAROLINA_MEMBER_ID) return 'conv-carolina';
+  if (memberId === PEDRO_MEMBER_ID) return 'conv-pedro';
+  return 'conv-red-juan';
 }
 
 function normalizeText(value: string) {

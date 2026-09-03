@@ -7,6 +7,7 @@ import { Button } from '../../components/forms/Button';
 import { ScreenHeader } from '../../components/layout/ScreenHeader';
 import { CAROLINA_MEMBER_ID, getCareMemberName } from '../../data/mockData';
 import { useModalScrollLock } from '../../hooks/useModalScrollLock';
+import { getConversationIdForMember } from '../messages/messagesData';
 
 export function AlertsScreen() {
   const navigate = useNavigate();
@@ -52,14 +53,7 @@ export function AlertsScreen() {
       <AlertList
         alerts={alerts}
         onRequestConfirmation={(alert) => pushFeedback(`Solicitud enviada a ${getCareMemberName(alert.responsableId)}`)}
-        onContactCaregiver={(alert) =>
-          navigate('/messages', {
-            state: {
-              conversation: getCareMemberName(alert.responsableId),
-              compose: true,
-            },
-          })
-        }
+        onContactCaregiver={(alert) => navigate(`/messages/${getConversationIdForMember(alert.responsableId)}`)}
         onViewCalendar={() => navigate('/calendar')}
         onViewReport={(alert) => openReportSheet(alert.responsableId)}
         onViewStock={() => navigate('/stock')}

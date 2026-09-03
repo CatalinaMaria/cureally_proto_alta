@@ -44,7 +44,7 @@ export function AlertList({
                   Solicitar confirmación
                 </Button>
                 <Button type="button" variant="ghost" onClick={() => onContactCaregiver(alert)}>
-                  Contactar cuidadora
+                  Contactar responsable
                 </Button>
               </>
             ) : null}

@@ -112,7 +112,7 @@ export const initialTasks: Task[] = [
     franja: 'manana',
     responsableId: CAROLINA_MEMBER_ID,
     descripcion: 'Administrar la medicación indicada luego del desayuno.',
-    ultimaActualizacion: 'Aún no confirmada por la cuidadora.',
+    ultimaActualizacion: 'Aún no confirmada por la persona responsable.',
   },
   {
     id: 'task-2',
@@ -121,7 +121,7 @@ export const initialTasks: Task[] = [
     franja: 'tarde',
     responsableId: PEDRO_MEMBER_ID,
     descripcion: 'Coordinar traslado y acompañamiento para el control médico de la tarde.',
-    ultimaActualizacion: 'Se solicitó confirmación a la cuidadora.',
+    ultimaActualizacion: 'Se solicitó confirmación a la persona responsable.',
   },
   {
     id: 'task-3',
@@ -130,7 +130,7 @@ export const initialTasks: Task[] = [
     franja: 'tarde',
     responsableId: CAROLINA_MEMBER_ID,
     descripcion: 'Preparar un almuerzo liviano según las recomendaciones médicas.',
-    ultimaActualizacion: 'Confirmada por la cuidadora a las 12:10 PM.',
+    ultimaActualizacion: 'Confirmada por la persona responsable a las 12:10 PM.',
   },
 ];
 

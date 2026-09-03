@@ -9,6 +9,7 @@ import { ScreenHeader } from '../../components/layout/ScreenHeader';
 import type { Task } from '../../types/domain';
 import { useModalScrollLock } from '../../hooks/useModalScrollLock';
 import { careNetwork, CAROLINA_MEMBER_ID, getCareMemberName } from '../../data/mockData';
+import { getConversationIdForMember } from '../messages/messagesData';
 
 const RESPONSIBLE_OPTIONS = careNetwork.filter((member) => member.tipo === 'caregiver');
 
@@ -89,14 +90,7 @@ export function TasksScreen() {
           tasks={tasks}
           onRequestConfirmation={handleRequestConfirmation}
           onViewDetail={openDetail}
-          onContactCaregiver={(task) =>
-            navigate('/messages', {
-              state: {
-                conversation: getCareMemberName(task.responsableId),
-                compose: true,
-              },
-            })
-          }
+          onContactCaregiver={(task) => navigate(`/messages/${getConversationIdForMember(task.responsableId)}`)}
         />
       </div>
 
