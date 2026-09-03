@@ -5,6 +5,7 @@ import { SectionTitle } from '../../components/feedback/SectionTitle';
 import { Card } from '../../components/cards/Card';
 import { ScreenHeader } from '../../components/layout/ScreenHeader';
 import { CONVERSATIONS, type Conversation, getConversationIdFromName } from './messagesData';
+import { useAuth } from '../../app/auth';
 
 interface MessagesRouteState {
   conversation?: string;
@@ -12,6 +13,7 @@ interface MessagesRouteState {
 
 export function MessagesScreen() {
   const navigate = useNavigate();
+  const { currentUser } = useAuth();
   const location = useLocation();
   const routeState = (location.state as MessagesRouteState | null) ?? null;
 
@@ -22,6 +24,10 @@ export function MessagesScreen() {
     navigate(`/messages/${requestedConversationId}`, { replace: true });
   }, [navigate, routeState?.conversation]);
 
+  const visibleConversations = currentUser?.role === 'caregiver'
+    ? CONVERSATIONS.filter((conversation) => conversation.esGrupo)
+    : CONVERSATIONS;
+
   return (
     <section className="screen stack-lg messages-page">
       <ScreenHeader title="Mensajes" subtitle="Seguimiento de conversaciones con la red de cuidado." />
@@ -29,7 +35,7 @@ export function MessagesScreen() {
       <section>
         <SectionTitle title="Conversaciones" />
         <div className="stack-sm">
-          {CONVERSATIONS.map((conversation) => (
+          {visibleConversations.map((conversation) => (
             <Card key={conversation.id} className={`conversation-card ${conversation.esGrupo ? 'conversation-card--group' : ''}`}>
               <div className="conversation-card__head">
                 <div className="conversation-card__identity">

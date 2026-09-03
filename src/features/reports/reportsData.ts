@@ -1,4 +1,5 @@
 import type { DailyReport } from '../../types/domain';
+import { getCareMemberName } from '../../data/mockData';
 
 export type ReportStatus = 'revisado' | 'nuevo' | 'atencion' | 'urgente';
 
@@ -13,8 +14,20 @@ export interface CareReport {
   notas?: string;
 }
 
-export function getCareReports(dailyReport: DailyReport): CareReport[] {
+export function getCareReports(dailyReport: DailyReport, caregiverReports: DailyReport[] = []): CareReport[] {
+  const submittedReports: CareReport[] = caregiverReports.map((report) => ({
+    id: report.id,
+    cuidador: getCareMemberName(report.cuidadorId),
+    fecha: report.fecha,
+    preview: report.observaciones,
+    estado: 'nuevo',
+    observacion: report.observaciones,
+    checks: report.checks,
+    notas: `Informe correspondiente al turno ${formatShift(report.turno)}.`,
+  }));
+
   return [
+    ...submittedReports,
     {
       id: 'report-carolina',
       cuidador: 'Carolina',
@@ -66,6 +79,12 @@ export function getCareReports(dailyReport: DailyReport): CareReport[] {
       notas: 'Se solicita revisión médica a la brevedad.',
     },
   ];
+}
+
+function formatShift(shift: DailyReport['turno']) {
+  if (shift === 'manana') return 'mañana';
+  if (shift === 'tarde') return 'tarde';
+  return 'noche';
 }
 
 export function formatReportDate(dateIso: string) {

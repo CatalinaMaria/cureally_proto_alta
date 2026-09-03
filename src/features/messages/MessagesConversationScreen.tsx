@@ -3,6 +3,7 @@ import { Navigate, useParams } from 'react-router-dom';
 import { Button } from '../../components/forms/Button';
 import { ScreenHeader } from '../../components/layout/ScreenHeader';
 import { CONVERSATION_THREADS, getConversationById, type ConversationMessage } from './messagesData';
+import { useAuth } from '../../app/auth';
 
 export function MessagesConversationScreen() {
   const { conversationId } = useParams<{ conversationId: string }>();
@@ -24,6 +25,7 @@ function MessagesConversationContent({
 }) {
   const [messages, setMessages] = useState<ConversationMessage[]>(() => [...(CONVERSATION_THREADS[conversationId] ?? [])]);
   const [draft, setDraft] = useState('');
+  const { currentUser } = useAuth();
 
   const handleSend = () => {
     const content = draft.trim();
@@ -33,8 +35,8 @@ function MessagesConversationContent({
       ...prev,
       {
         id: `msg-${Date.now()}`,
-        remitente: 'María',
-        tipoRemitente: 'maria',
+        remitente: currentUser?.nombre ?? 'Usuario',
+        tipoRemitente: currentUser?.role === 'family' ? 'family' : 'caregiver',
         texto: content,
         hora: 'Ahora',
       },
@@ -52,9 +54,9 @@ function MessagesConversationContent({
         {messages.map((message) => (
           <div
             key={message.id}
-            className={`message-bubble ${message.tipoRemitente === 'maria' ? 'message-bubble--maria' : 'message-bubble--carolina'}`}
+            className={`message-bubble ${message.remitente === currentUser?.nombre ? 'message-bubble--maria' : 'message-bubble--carolina'}`}
           >
-            {message.tipoRemitente !== 'maria' ? <p className="message-bubble__sender">{message.remitente}</p> : null}
+            {message.remitente !== currentUser?.nombre ? <p className="message-bubble__sender">{message.remitente}</p> : null}
             <p>{message.texto}</p>
             <span>{message.hora}</span>
           </div>

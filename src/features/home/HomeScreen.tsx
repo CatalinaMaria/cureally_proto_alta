@@ -1,7 +1,7 @@
 import { type KeyboardEvent, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useCareStore } from '../../app/care-store';
-import { getCareMember } from '../../data/mockData';
+import { DEMO_TODAY, getCareMember, getCareMemberName } from '../../data/mockData';
 import { useAuth } from '../../app/auth';
 import { ActivityList } from '../../components/cards/ActivityList';
 import { Card } from '../../components/cards/Card';
@@ -14,9 +14,9 @@ import juanAvatar from '../../assets/juan-perez-avatar.png';
 export function HomeScreen() {
   const navigate = useNavigate();
   const { currentUser } = useAuth();
-  const { patient, tasks, alerts, activities } = useCareStore();
+  const { patient, tasks, alerts, activities, careUpdates, medicationRecords } = useCareStore();
 
-  const today = '2026-05-13';
+  const today = DEMO_TODAY;
   const todayActivities = useMemo(
     () => activities.filter((activity) => activity.fecha === today).sort((a, b) => a.hora.localeCompare(b.hora)),
     [activities],
@@ -129,6 +129,29 @@ export function HomeScreen() {
           onOpenCalendar={() => navigate('/calendar')}
         />
       </section>
+
+      {careUpdates.length || medicationRecords.length ? (
+        <section className="home-section">
+          <SectionTitle title="Registros recientes del equipo" />
+          <div className="stack-sm">
+            {careUpdates.slice(0, 2).map((update) => (
+              <Card key={update.id} className="family-shared-record">
+                <p className="family-shared-record__label">Novedad de {getCareMemberName(update.cuidadorId)} · {update.registradaEn}</p>
+                <p>{update.texto}</p>
+              </Card>
+            ))}
+            {medicationRecords.slice(0, 2).map((record) => {
+              const activity = activities.find((candidate) => candidate.id === record.activityId);
+              return (
+                <Card key={record.id} className="family-shared-record family-shared-record--success">
+                  <p className="family-shared-record__label">Medicación administrada · {record.registradaEn}</p>
+                  <p><strong>{activity?.titulo ?? 'Medicación'}</strong> · registrada por {getCareMemberName(record.cuidadorId)}</p>
+                </Card>
+              );
+            })}
+          </div>
+        </section>
+      ) : null}
     </section>
   );
 }

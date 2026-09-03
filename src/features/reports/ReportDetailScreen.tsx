@@ -9,9 +9,9 @@ import { formatReportDate, getCareReports } from './reportsData';
 export function ReportDetailScreen() {
   const { reportId } = useParams<{ reportId: string }>();
   const navigate = useNavigate();
-  const { dailyReport } = useCareStore();
+  const { dailyReport, caregiverReports } = useCareStore();
 
-  const reports = useMemo(() => getCareReports(dailyReport), [dailyReport]);
+  const reports = useMemo(() => getCareReports(dailyReport, caregiverReports), [caregiverReports, dailyReport]);
   const report = reports.find((item) => item.id === reportId) ?? null;
 
   if (!report || !reportId) {

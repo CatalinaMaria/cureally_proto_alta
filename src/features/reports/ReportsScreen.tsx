@@ -9,9 +9,9 @@ import { formatReportDate, getCareReports, getReportStatusLabel, getReportStatus
 
 export function ReportsScreen() {
   const navigate = useNavigate();
-  const { dailyReport } = useCareStore();
+  const { dailyReport, caregiverReports } = useCareStore();
 
-  const reports = useMemo(() => getCareReports(dailyReport), [dailyReport]);
+  const reports = useMemo(() => getCareReports(dailyReport, caregiverReports), [caregiverReports, dailyReport]);
 
   return (
     <section className="screen stack-lg">

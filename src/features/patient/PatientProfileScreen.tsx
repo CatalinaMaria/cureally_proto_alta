@@ -7,6 +7,7 @@ import { Button } from '../../components/forms/Button';
 import { Card } from '../../components/cards/Card';
 import { ScreenHeader } from '../../components/layout/ScreenHeader';
 import juanAvatar from '../../assets/juan-perez-avatar.png';
+import { useAuth } from '../../app/auth';
 
 interface ImportantContact {
   id: string;
@@ -46,6 +47,7 @@ const importantContacts: ImportantContact[] = [
 
 export function PatientProfileScreen() {
   const navigate = useNavigate();
+  const { currentUser } = useAuth();
   const { patient } = useCareStore();
   const [feedback, setFeedback] = useState('');
 
@@ -70,7 +72,7 @@ export function PatientProfileScreen() {
 
   return (
     <section className="screen stack-lg">
-      <ScreenHeader title="Perfil de Juan" subtitle="Detalle del paciente" showBack backTo="/home" />
+      <ScreenHeader title="Perfil de Juan" subtitle="Detalle del paciente" showBack backTo={currentUser?.role === 'caregiver' ? '/caregiver/home' : '/home'} />
 
       <Card className="patient-detail-hero">
         <div className="patient-detail-hero__avatar-wrap">
@@ -150,13 +152,13 @@ export function PatientProfileScreen() {
         </div>
       </Card>
 
-      <Card className="profile-action-card">
+      {currentUser?.role === 'family' ? <Card className="profile-action-card">
         <p className="profile-action-card__title">Historial médico / Informes</p>
         <p className="muted-text">Consultá reportes diarios y evolución reciente de cuidado.</p>
         <Button type="button" variant="secondary" className="profile-action-card__button" onClick={() => navigate('/reports')}>
           Ver informes
         </Button>
-      </Card>
+      </Card> : null}
 
       {feedback ? (
         <p className="profile-feedback" role="status" aria-live="polite">
