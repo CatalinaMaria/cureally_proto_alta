@@ -23,6 +23,7 @@ interface CareStoreValue {
   addCareUpdate: (caregiverId: string, texto: string) => void;
   submitDailyReport: (caregiverId: string, turno: TaskShift, observaciones: string, checks: string[]) => void;
   registerStockReplenishment: (actorId: string, stockItemId: string, cantidad: number, observacion?: string) => boolean;
+  reportStockShortage: (actorId: string, stockItemId: string) => boolean;
   confirmAlert: (alertId: string) => void;
 }
 
@@ -168,9 +169,29 @@ export function CareStoreProvider({ children }: { children: ReactNode }) {
       registerStockReplenishment: (actorId, stockItemId, cantidad, observacion) => {
         const actor = careNetwork.find((member) => member.id === actorId);
         const itemExists = stockItems.some((item) => item.id === stockItemId);
-        if (!actor || actor.tipo !== 'family' || !itemExists || cantidad <= 0) return false;
+        if (!actor || !itemExists || cantidad <= 0) return false;
         setStockItems((prev) => prev.map((item) => item.id === stockItemId ? { ...item, cantidad: item.cantidad + cantidad } : item));
         setStockMovements((prev) => [{ id: `move-${Date.now()}`, stockItemId, cantidad, tipo: 'reposicion', actorId, observacion: observacion?.trim() || undefined, registradaEn: 'Ahora' }, ...prev]);
+        return true;
+      },
+      reportStockShortage: (actorId, stockItemId) => {
+        const actor = careNetwork.find((member) => member.id === actorId);
+        const item = stockItems.find((candidate) => candidate.id === stockItemId);
+        if (!actor || actor.tipo !== 'caregiver' || !item) return false;
+
+        setAlerts((prev) => [
+          {
+            id: `alert-stock-${Date.now()}`,
+            tipo: 'stock_bajo',
+            titulo: `Faltante de ${item.nombre}`,
+            descripcion: `${actor.nombre} señaló que quedan ${item.cantidad} ${item.unidad}.`,
+            hora: 'Ahora',
+            severidad: item.cantidad <= 2 ? 'alta' : 'media',
+            confirmada: false,
+            responsableId: actorId,
+          },
+          ...prev,
+        ]);
         return true;
       },
       confirmAlert: (alertId) => {

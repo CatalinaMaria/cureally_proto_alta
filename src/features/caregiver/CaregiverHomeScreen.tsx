@@ -9,6 +9,8 @@ import { SectionTitle } from '../../components/feedback/SectionTitle';
 import { Button } from '../../components/forms/Button';
 import { ScreenHeader } from '../../components/layout/ScreenHeader';
 import { DEMO_TODAY } from '../../data/mockData';
+import juanAvatar from '../../assets/juan-perez-avatar.png';
+import { sortAlertsByPriority } from '../alerts/alertSorting';
 
 export function CaregiverHomeScreen() {
   const navigate = useNavigate();
@@ -25,8 +27,8 @@ export function CaregiverHomeScreen() {
   const nextMedication = myActivities.find(
     (activity) => activity.categoria === 'medicacion' && activity.estado !== 'completada',
   );
-  const relevantAlerts = alerts.filter(
-    (alert) => !alert.confirmada && (!alert.responsableId || alert.responsableId === caregiverId),
+  const relevantAlerts = sortAlertsByPriority(
+    alerts.filter((alert) => !alert.confirmada && (!alert.responsableId || alert.responsableId === caregiverId)),
   );
 
   const quickLinks: QuickAccessItem[] = [
@@ -60,6 +62,23 @@ export function CaregiverHomeScreen() {
     },
   ];
 
+  const sharedCareLinks: QuickAccessItem[] = [
+    {
+      id: 'caregiver-agenda',
+      titulo: 'Agenda',
+      descripcion: 'Consultar el calendario compartido',
+      icon: 'calendar',
+      onSelect: () => navigate('/caregiver/agenda'),
+    },
+    {
+      id: 'caregiver-stock',
+      titulo: 'Stock e insumos',
+      descripcion: 'Revisar existencias y movimientos',
+      icon: 'stock',
+      onSelect: () => navigate('/caregiver/stock'),
+    },
+  ];
+
   return (
     <section className="screen caregiver-home">
       <ScreenHeader title="Mi turno" subtitle={`Hola, ${currentUser?.nombre ?? 'Cuidador'}`} />
@@ -67,7 +86,8 @@ export function CaregiverHomeScreen() {
       <Card className="caregiver-patient-card">
         <p className="caregiver-eyebrow">Persona cuidada</p>
         <div className="caregiver-patient-card__row">
-          <div>
+          <img className="caregiver-patient-card__avatar" src={juanAvatar} alt={`Foto de ${patient.nombre}`} />
+          <div className="caregiver-patient-card__identity">
             <h2>{patient.nombre}</h2>
             <p>{patient.edad} años · {patient.diagnostico}</p>
           </div>
@@ -112,6 +132,11 @@ export function CaregiverHomeScreen() {
       </section>
 
       <section className="home-section">
+        <SectionTitle title="Consultar el cuidado" />
+        <QuickAccessGrid items={sharedCareLinks} />
+      </section>
+
+      <section className="home-section">
         <SectionTitle title="Tareas pendientes" />
         <div className="stack-sm">
           {pendingTasks.slice(0, 2).map((task) => (
@@ -149,8 +174,13 @@ export function CaregiverHomeScreen() {
         <section className="home-section">
           <SectionTitle title="Alertas relevantes" />
           {relevantAlerts.map((alert) => (
-            <Card key={alert.id} className="list-card alert-card alert-card--alta">
-              <div className="list-card__row"><p className="list-card__title">{alert.titulo}</p><Badge variant="danger">Atención</Badge></div>
+            <Card key={alert.id} className={`list-card alert-card alert-card--${alert.severidad}`}>
+              <div className="list-card__row">
+                <p className="list-card__title">{alert.titulo}</p>
+                <Badge variant={alert.severidad === 'alta' ? 'danger' : alert.severidad === 'media' ? 'warning' : 'neutral'}>
+                  {alert.severidad === 'alta' ? 'Alta' : alert.severidad === 'media' ? 'Media' : 'Baja'}
+                </Badge>
+              </div>
               <p className="alert-card__description">{alert.descripcion}</p>
             </Card>
           ))}

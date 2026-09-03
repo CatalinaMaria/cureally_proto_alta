@@ -2,6 +2,7 @@ import type { Alert } from '../../types/domain';
 import { Badge } from '../feedback/Badge';
 import { Button } from '../forms/Button';
 import { Card } from './Card';
+import { sortAlertsByPriority } from '../../features/alerts/alertSorting';
 
 interface AlertListProps {
   alerts: Alert[];
@@ -24,7 +25,7 @@ export function AlertList({
 }: AlertListProps) {
   return (
     <div className="stack-sm">
-      {alerts.map((alert) => (
+      {sortAlertsByPriority(alerts).map((alert) => (
         <Card key={alert.id} className={`list-card alert-card ${severityCardClass(alert.severidad)}`}>
           <div className="list-card__row">
             <div className="alert-card__title-wrap">

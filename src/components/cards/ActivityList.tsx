@@ -11,6 +11,7 @@ interface ActivityListProps {
   emptyMessage?: string;
   enableDetail?: boolean;
   onOpenCalendar?: () => void;
+  viewerMemberId?: string;
 }
 
 export function ActivityList({
@@ -18,6 +19,7 @@ export function ActivityList({
   emptyMessage = 'No hay actividades registradas.',
   enableDetail = false,
   onOpenCalendar,
+  viewerMemberId,
 }: ActivityListProps) {
   const [selectedActivity, setSelectedActivity] = useState<Activity | null>(null);
   const [requestSent, setRequestSent] = useState(false);
@@ -72,6 +74,13 @@ export function ActivityList({
                 <span className="muted-text">{formatCategory(activity.categoria)}</span>
               </div>
               {recurrence ? <p className="list-card__meta">{recurrence}</p> : null}
+              {viewerMemberId ? (
+                <p className={`activity-assignment ${activity.responsableId === viewerMemberId ? 'activity-assignment--mine' : ''}`}>
+                  {activity.responsableId === viewerMemberId
+                    ? 'Asignada a vos'
+                    : `Responsable: ${getCareMemberName(activity.responsableId)}`}
+                </p>
+              ) : null}
               {enableDetail ? (
                 <div className="list-card__footer">
                   <button

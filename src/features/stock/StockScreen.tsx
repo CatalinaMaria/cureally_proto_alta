@@ -11,7 +11,8 @@ import type { StockItem } from '../../types/domain';
 
 export function StockScreen() {
   const { currentUser } = useAuth();
-  const { stockItems, stockMovements, registerStockReplenishment } = useCareStore();
+  const { stockItems, stockMovements, registerStockReplenishment, reportStockShortage } = useCareStore();
+  const isCaregiver = currentUser?.role === 'caregiver';
   const [isFormOpen, setIsFormOpen] = useState(false);
   const [stockItemId, setStockItemId] = useState(stockItems[0]?.id ?? '');
   const [quantity, setQuantity] = useState('');
@@ -29,9 +30,20 @@ export function StockScreen() {
     window.setTimeout(() => setFeedback(''), 2800);
   };
 
+  const handleShortage = (item: StockItem) => {
+    if (!currentUser || !reportStockShortage(currentUser.careMemberId, item.id)) return;
+    setFeedback(`Faltante de ${item.nombre} señalado a la red de cuidado.`);
+    window.setTimeout(() => setFeedback(''), 2800);
+  };
+
   return (
     <section className="screen stack-lg">
-      <ScreenHeader title="Stock de cuidado" subtitle="Medicaciones e insumos necesarios para Juan." showBack backTo="/home" />
+      <ScreenHeader
+        title={isCaregiver ? 'Stock e insumos' : 'Stock de cuidado'}
+        subtitle="Medicaciones e insumos necesarios para Juan."
+        showBack
+        backTo={isCaregiver ? '/caregiver/home' : '/home'}
+      />
 
       <Button type="button" fullWidth onClick={() => setIsFormOpen((open) => !open)}>
         {isFormOpen ? 'Cerrar registro' : '+ Registrar compra o reposición'}
@@ -53,7 +65,17 @@ export function StockScreen() {
       {(['medicacion', 'insumo'] as const).map((category) => (
         <section key={category}>
           <SectionTitle title={category === 'medicacion' ? 'Medicación' : 'Insumos'} />
-          <div className="stack-sm">{stockItems.filter((item) => item.categoria === category).map((item) => <StockCard key={item.id} item={item} />)}</div>
+          <div className="stack-sm">
+            {stockItems
+              .filter((item) => item.categoria === category)
+              .map((item) => (
+                <StockCard
+                  key={item.id}
+                  item={item}
+                  onReportShortage={isCaregiver ? () => handleShortage(item) : undefined}
+                />
+              ))}
+          </div>
         </section>
       ))}
 
@@ -72,7 +94,20 @@ export function StockScreen() {
   );
 }
 
-function StockCard({ item }: { item: StockItem }) {
+function StockCard({ item, onReportShortage }: { item: StockItem; onReportShortage?: () => void }) {
   const status = item.cantidad <= 2 ? 'critico' : item.cantidad <= 5 ? 'bajo' : 'suficiente';
-  return <Card className={`list-card stock-card stock-card--${status === 'critico' ? 'critical' : status === 'bajo' ? 'low' : 'ok'}`}><div className="list-card__row"><p className="list-card__title">{item.nombre}</p><Badge variant={status === 'critico' ? 'danger' : status === 'bajo' ? 'warning' : 'success'}>{status === 'critico' ? 'Crítico' : status === 'bajo' ? 'Bajo stock' : 'Suficiente'}</Badge></div><p className="list-card__meta">Quedan {item.cantidad} {item.unidad}</p></Card>;
+  return (
+    <Card className={`list-card stock-card stock-card--${status === 'critico' ? 'critical' : status === 'bajo' ? 'low' : 'ok'}`}>
+      <div className="list-card__row">
+        <p className="list-card__title">{item.nombre}</p>
+        <Badge variant={status === 'critico' ? 'danger' : status === 'bajo' ? 'warning' : 'success'}>
+          {status === 'critico' ? 'Crítico' : status === 'bajo' ? 'Bajo stock' : 'Suficiente'}
+        </Badge>
+      </div>
+      <p className="list-card__meta">Quedan {item.cantidad} {item.unidad}</p>
+      {onReportShortage && status !== 'suficiente' ? (
+        <Button type="button" variant="ghost" onClick={onReportShortage}>Señalar faltante</Button>
+      ) : null}
+    </Card>
+  );
 }

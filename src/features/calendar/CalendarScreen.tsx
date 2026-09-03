@@ -34,6 +34,7 @@ export function CalendarScreen() {
   const location = useLocation();
   const { currentUser } = useAuth();
   const { selectedDate, setSelectedDate, activities, patient } = useCareStore();
+  const isCaregiver = currentUser?.role === 'caregiver';
   const routeState = (location.state as CalendarRouteState | null) ?? null;
   const [feedback, setFeedback] = useState(() => routeState?.calendarFeedback ?? '');
   const [visibleMonth, setVisibleMonth] = useState(() => getMonthStartFromIso(selectedDate));
@@ -86,7 +87,12 @@ export function CalendarScreen() {
 
   return (
     <section className="screen stack-lg">
-      <ScreenHeader title="Calendario" subtitle={patient.nombre} showBack backTo="/home" />
+      <ScreenHeader
+        title={isCaregiver ? 'Agenda compartida' : 'Calendario'}
+        subtitle={`${patient.nombre} · ${isCaregiver ? 'Modo consulta' : 'Planificación del cuidado'}`}
+        showBack
+        backTo={isCaregiver ? '/caregiver/home' : '/home'}
+      />
 
       <Card>
         <div className="calendar-month-nav">
@@ -120,7 +126,11 @@ export function CalendarScreen() {
 
       <Card>
         <SectionTitle title={`Actividad del ${formatDate(selectedDate)}`} />
-        <ActivityList activities={dayActivities} emptyMessage="No hay actividades para este día." />
+        <ActivityList
+          activities={dayActivities}
+          emptyMessage="No hay actividades para este día."
+          viewerMemberId={isCaregiver ? currentUser?.careMemberId : undefined}
+        />
       </Card>
 
       {feedback ? (

@@ -716,8 +716,22 @@
 .caregiver-patient-card__row {
   display: flex;
   align-items: center;
-  justify-content: space-between;
   gap: var(--space-3);
+}
+
+.caregiver-patient-card__avatar {
+  width: 62px;
+  height: 62px;
+  flex: 0 0 62px;
+  border: 3px solid var(--bg-surface);
+  border-radius: 50%;
+  object-fit: cover;
+  box-shadow: var(--shadow-soft);
+}
+
+.caregiver-patient-card__identity {
+  min-width: 0;
+  flex: 1;
 }
 
 .caregiver-patient-card__row h2 {
@@ -726,8 +740,124 @@
 }
 
 .caregiver-patient-card__row p {
+  margin: var(--space-1) 0 0;
   color: var(--text-secondary);
   font-size: var(--size-12);
+}
+
+.activity-assignment {
+  margin: var(--space-2) 0 0;
+  color: var(--text-secondary);
+  font-size: var(--size-12);
+  font-weight: 600;
+}
+
+.activity-assignment--mine {
+  color: var(--accent-strong);
+}
+
+.caregiver-profile-hero {
+  display: grid;
+  gap: var(--space-4);
+  background: linear-gradient(145deg, #eaf7f4 0%, #fffdf8 100%);
+  border-color: #acd8d2;
+}
+
+.caregiver-profile-hero__identity {
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  align-items: center;
+  gap: var(--space-3);
+}
+
+.caregiver-profile-hero__avatar {
+  width: 58px;
+  height: 58px;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  background: var(--accent);
+  color: var(--text-on-accent);
+  font-size: var(--size-24);
+  font-weight: 800;
+  box-shadow: 0 0 0 4px rgba(255, 255, 255, 0.8);
+}
+
+.caregiver-profile-hero__identity h2,
+.caregiver-profile-hero__identity p {
+  margin: 0;
+}
+
+.caregiver-profile-hero__identity p {
+  margin-top: 2px;
+  color: var(--text-secondary);
+  font-size: var(--size-12);
+}
+
+.caregiver-profile-hero__patient {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-3);
+  padding: var(--space-3);
+  border-radius: var(--radius-sm);
+  background: rgba(255, 255, 255, 0.72);
+}
+
+.caregiver-profile-hero__patient span {
+  color: var(--text-secondary);
+  font-size: var(--size-12);
+}
+
+.caregiver-profile-summary {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: var(--space-2);
+}
+
+.caregiver-profile-summary div {
+  display: grid;
+  gap: 2px;
+  padding: var(--space-2);
+  border-radius: 10px;
+  background: var(--bg-surface);
+  text-align: center;
+}
+
+.caregiver-profile-summary strong {
+  color: var(--accent-strong);
+  font-size: var(--size-20);
+}
+
+.caregiver-profile-summary span {
+  color: var(--text-secondary);
+  font-size: 10px;
+  line-height: 1.25;
+}
+
+.caregiver-profile-access {
+  display: grid;
+  gap: var(--space-4);
+}
+
+.caregiver-profile-access strong {
+  font-size: var(--size-14);
+}
+
+.caregiver-permission-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+}
+
+.caregiver-permission-chips span {
+  padding: 5px 9px;
+  border: 1px solid #b9ddd8;
+  border-radius: 999px;
+  background: var(--accent-soft);
+  color: var(--accent-strong);
+  font-size: 11px;
+  font-weight: 600;
 }
 
 .caregiver-next-card {

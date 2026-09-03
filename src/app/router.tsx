@@ -51,6 +51,8 @@ export function AppRouter() {
             <Route path="/caregiver/tasks" element={<CaregiverTasksScreen />} />
             <Route path="/caregiver/log" element={<CaregiverLogScreen />} />
             <Route path="/caregiver/profile" element={<CaregiverProfileScreen />} />
+            <Route path="/caregiver/agenda" element={<CalendarScreen />} />
+            <Route path="/caregiver/stock" element={<StockScreen />} />
           </Route>
         </Route>
       </Route>
