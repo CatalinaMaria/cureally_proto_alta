@@ -860,6 +860,26 @@
   font-weight: 600;
 }
 
+.family-profile-hero {
+  background: linear-gradient(145deg, #eef8f6 0%, #fffaf1 100%);
+}
+
+.family-profile-section-heading {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--space-3);
+  margin-bottom: var(--space-2);
+}
+
+.family-profile-section-heading .card-title {
+  margin: 0;
+}
+
+.profile-anchor-section {
+  scroll-margin-top: var(--space-4);
+}
+
 .caregiver-next-card {
   display: flex;
   flex-direction: column;

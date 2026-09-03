@@ -1,5 +1,5 @@
-import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useEffect, useState } from 'react';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { useCareStore } from '../../app/care-store';
 import { careNetwork } from '../../data/mockData';
 import { Badge } from '../../components/feedback/Badge';
@@ -49,9 +49,15 @@ const importantContacts: ImportantContact[] = [
 
 export function PatientProfileScreen() {
   const navigate = useNavigate();
+  const location = useLocation();
   const { currentUser } = useAuth();
   const { patient } = useCareStore();
   const [feedback, setFeedback] = useState('');
+
+  useEffect(() => {
+    if (location.hash !== '#care-network') return;
+    document.getElementById('care-network')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }, [location.hash]);
 
   const pushFeedback = (message: string) => {
     setFeedback(message);
@@ -105,17 +111,19 @@ export function PatientProfileScreen() {
         </dl>
       </Card>
 
-      <Card>
-        <h3 className="card-title">Red de cuidado</h3>
-        <ul className="simple-list">
-          {careNetwork.map((member) => (
-            <li key={member.id}>
-              <span>{member.nombre}</span>
-              <span className="muted-text">{member.rol}</span>
-            </li>
-          ))}
-        </ul>
-      </Card>
+      <div id="care-network" className="profile-anchor-section">
+        <Card>
+          <h3 className="card-title">Red de cuidado</h3>
+          <ul className="simple-list">
+            {careNetwork.map((member) => (
+              <li key={member.id}>
+                <span>{member.nombre}</span>
+                <span className="muted-text">{member.rol}</span>
+              </li>
+            ))}
+          </ul>
+        </Card>
+      </div>
 
       <Card>
         <h3 className="card-title">Contactos importantes</h3>
