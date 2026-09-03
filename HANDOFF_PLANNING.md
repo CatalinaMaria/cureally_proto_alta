@@ -1,239 +1,308 @@
-# CureAlly Handoff (Branch: `planning`)
+# CureAlly — Handoff final de `planning`
 
-Last updated: May 14, 2026  
-Repository: `cureally_proto_alta`  
-Active branch: `planning`  
-Latest commit on branch: `b9072f7` (`Polish welcome screen and integrate CureAlly logo`)
+Última actualización: 3 de septiembre de 2026
+Repositorio: `cureally_proto_alta`
+Rama activa y desplegable: `planning`
+Último commit funcional previo a este handoff: `ab9db2a` (`Unify family profile experience`)
 
-## 1) Project intent and current product framing
+## 1. Objetivo y estado actual
 
-This is a **mobile-first, low-fidelity but polished** React + Vite + TypeScript prototype for **CureAlly**.
+CureAlly es un prototipo mobile-first para una tesis sobre coordinación colaborativa del cuidado de personas mayores. El MVP permite demostrar, dentro de una misma aplicación, experiencias diferenciadas para familiares y cuidadores profesionales.
 
-Primary user flow is **family member coordination** (María supervising her father Juan’s care), not direct caregiver task execution.
+La versión de `planning` es la base vigente del prototipo y la rama utilizada por el despliegue de Cloudflare. No se incorporaron backend, autenticación real, persistencia remota ni integraciones externas.
 
-Key product messaging across implemented UX:
-- clarity
-- organization
-- trust
-- calm
+Principios de producto preservados:
 
-All UI copy is in Spanish.
+- Familiar: “¿Cómo está el cuidado?”
+- Cuidador: “¿Qué tengo que hacer ahora?”
+- Una acción operativa registrada por un cuidador se refleja en la supervisión familiar mientras la aplicación siga abierta.
+- La interfaz utiliza español, una estética cálida en crema y verde azulado, tarjetas compartidas y navegación mobile-first.
 
-## 2) High-level architecture
+## 2. Arquitectura y tecnologías
 
-- Framework: React 19 + React Router + Vite
-- State: local React state + context providers (no backend)
-- Auth: mocked login + `localStorage` session flag
-- Design system: CSS tokens + shared component classes
+- React 19
+- TypeScript
+- Vite
+- React Router
+- Context providers y estado local de React
+- `localStorage` únicamente para recordar el usuario demo seleccionado
+- CSS tradicional con tokens y componentes visuales compartidos
+- Sin backend ni base de datos
 
-Main wiring:
-- [src/app/main.tsx](/Users/catalinadearzubiagamenghi/Documents/cureally/proto_alta/src/app/main.tsx)
-- [src/app/router.tsx](/Users/catalinadearzubiagamenghi/Documents/cureally/proto_alta/src/app/router.tsx)
-- [src/app/auth.tsx](/Users/catalinadearzubiagamenghi/Documents/cureally/proto_alta/src/app/auth.tsx)
-- [src/app/care-store.tsx](/Users/catalinadearzubiagamenghi/Documents/cureally/proto_alta/src/app/care-store.tsx)
+Archivos centrales:
 
-## 3) Route map and navigation behavior
+- `src/app/main.tsx`: composición de providers y router.
+- `src/app/router.tsx`: rutas públicas, familiares, de coordinación y de cuidadores.
+- `src/app/auth.tsx`: sesión demo, selección de usuario y guards por rol.
+- `src/app/care-store.tsx`: estado compartido de actividades, tareas, alertas, medicación, novedades, informes y stock.
+- `src/types/domain.ts`: tipos de dominio.
+- `src/data/mockData.ts`: personajes, datos de Juan y contenido inicial.
+- `src/styles/tokens.css` y `src/styles/components.css`: sistema visual.
 
-Public:
-- `/` → Welcome
-- `/login` → Login
+## 3. Identidades canónicas
 
-Protected (inside `RequireAuth` + `AppShell`):
-- `/home`
+No utilizar nombres como claves relacionales. Las asociaciones se realizan con IDs (`careMemberId`, `responsableId`, `cuidadorId`, `actorId`, etc.).
+
+- Juan Pérez: persona cuidada, 76 años, diagnóstico mock de Alzheimer.
+- Carina: hija y familiar responsable; coordinadora principal.
+- Diego: hijo y familiar participante de la red.
+- María: cuidadora profesional.
+- Pedro: cuidador profesional.
+
+Juan aparece exclusivamente como persona cuidada. No existe un segundo integrante familiar llamado Juan.
+
+## 4. Login y sesión demo
+
+El login no usa credenciales. La pantalla permite elegir visualmente:
+
+- Carina — Familiar responsable.
+- Diego — Familiar.
+- María — Cuidadora profesional.
+- Pedro — Cuidador profesional.
+
+La selección establece identidad y rol y redirige a la experiencia correspondiente. Cambiar de perfil mediante “Cerrar sesión” mantiene el store compartido durante la misma ejecución. Recargar la página reinicia los datos mock, aunque la identidad demo queda recordada por `localStorage`.
+
+## 5. Rutas y navegación
+
+Públicas:
+
+- `/` — Bienvenida.
+- `/login` — Selección de perfil demo.
+
+Compartidas con autenticación:
+
 - `/messages`
+- `/messages/:conversationId`
+- `/patient-profile`
+
+Familiares:
+
+- `/home`
 - `/calendar`
-- `/tasks`
 - `/alerts`
+- `/stock`
+- `/reports`
+- `/reports/:reportId`
 - `/profile`
 
-Bottom nav is intentionally 4 tabs (family flow):
-- Inicio
-- Mensajes
-- Alertas
-- Perfil
+Exclusivas de Carina mediante `RequireCoordinator`:
 
-`Tareas` and `Calendario` are intentionally accessed from Home quick-access cards (not bottom tabs).
+- `/calendar/add`
+- `/tasks`
 
-## 4) Auth/session behavior
+Cuidadores:
 
-Demo credentials:
-- Email: `maria@cureally.com`
-- Password: `123456`
+- `/caregiver/home`
+- `/caregiver/tasks`
+- `/caregiver/log`
+- `/caregiver/profile`
+- `/caregiver/agenda`
+- `/caregiver/stock`
 
-Behavior:
-- Valid credentials set `localStorage` key `cureally:isAuthenticated = true`
-- `RequireAuth` redirects unauthenticated access to `/login`
-- Logout from Perfil clears auth and navigates to `/` (Welcome), not directly Login
+La navegación inferior conserva cuatro pestañas por rol. Agenda y Stock se presentan como accesos rápidos en la experiencia cuidadora para evitar sobrecargarla.
 
-File:
-- [src/app/auth.tsx](/Users/catalinadearzubiagamenghi/Documents/cureally/proto_alta/src/app/auth.tsx)
+## 6. Experiencia familiar
 
-## 5) Shared data model and mock content
+### Carina — coordinación principal
 
-Types:
-- [src/types/domain.ts](/Users/catalinadearzubiagamenghi/Documents/cureally/proto_alta/src/types/domain.ts)
+Puede:
 
-Mock source:
-- [src/data/mockData.ts](/Users/catalinadearzubiagamenghi/Documents/cureally/proto_alta/src/data/mockData.ts)
+- supervisar estado general, agenda, tareas, alertas, informes y stock;
+- crear actividades y medicaciones;
+- asignar o reasignar responsables;
+- solicitar confirmaciones;
+- consultar registros realizados por cuidadores;
+- registrar compras o reposiciones;
+- comunicarse con la red;
+- consultar y navegar la red de cuidado.
 
-Important current mock decisions:
-- Patient: Juan Pérez (76, Alzheimer)
-- Care network: María (familiar responsable), Carolina (cuidadora), Juan (Padre)
-- Alerts are family-oriented (missing confirmations, upcoming appointment, new report)
-- Tasks include caregiver-responsible statuses (`sin_confirmar`, `pendiente`, `confirmada`)
+No puede marcar tareas operativas ni registrar una medicación como administrada en nombre del cuidador.
 
-## 6) Screen-by-screen implementation status
+Su perfil muestra avatar, rol, badge “Coordinadora principal”, Juan como persona cuidada, métricas de coordinación, accesos relevantes y preferencias de notificaciones.
 
-### Welcome
-- Replaced old `CA` placeholder with logo image:
-  - [public/cureally-logo.svg](/Users/catalinadearzubiagamenghi/Documents/cureally/proto_alta/public/cureally-logo.svg)
-- Improved vertical hierarchy and polish while keeping warm cream/teal style.
-- Files:
-  - [src/features/welcome/WelcomeScreen.tsx](/Users/catalinadearzubiagamenghi/Documents/cureally/proto_alta/src/features/welcome/WelcomeScreen.tsx)
-  - [src/styles/components.css](/Users/catalinadearzubiagamenghi/Documents/cureally/proto_alta/src/styles/components.css)
+### Diego — familiar colaborador
 
-### Login
-- Spanish copy
-- Demo credentials prefilled
-- Validation with mocked auth only
-- No real account recovery/signup; shows helper errors
-- File: [src/features/auth/LoginScreen.tsx](/Users/catalinadearzubiagamenghi/Documents/cureally/proto_alta/src/features/auth/LoginScreen.tsx)
+Puede:
 
-### Home (`Inicio`)
-- Family-oriented header: “Estado de cuidado de Juan”
-- Includes:
-  - patient summary card
-  - Estado de hoy card
-  - quick-access grid (Calendario/Tareas/Alertas/Perfil)
-  - Próximas actividades list
-- Standalone “Próxima actividad” card was intentionally removed to avoid duplication.
-- Activity detail bottom sheet now opens from each activity in the list via “Ver detalle”.
-- File: [src/features/home/HomeScreen.tsx](/Users/catalinadearzubiagamenghi/Documents/cureally/proto_alta/src/features/home/HomeScreen.tsx)
+- consultar el estado del cuidado, agenda, alertas e información de Juan;
+- acceder a mensajes y a la red de cuidado;
+- consultar stock y movimientos;
+- registrar compras o reposiciones.
 
-### Calendar
-- Month navigation arrows added (prev/next month)
-- Selected-day agenda list
-- “+ Agregar actividad o medicación” opens bottom sheet with mocked form:
-  - Tipo
-  - Nombre (placeholder changes by type)
-  - Custom time selector (hour/minute/am-pm, no native time picker)
-  - Responsable dropdown (Carolina/Pedro/María)
-  - Repetición + Duración + Fecha finalización (conditional)
-  - Nota opcional
-- Saves in-memory and shows success feedback
-- Basic recurrence display is handled in activity metadata
-- File: [src/features/calendar/CalendarScreen.tsx](/Users/catalinadearzubiagamenghi/Documents/cureally/proto_alta/src/features/calendar/CalendarScreen.tsx)
+No tiene accesos para gestionar responsables, crear planificación, reasignar tareas ni solicitar confirmaciones administrativas.
 
-### Tasks
-- Family-oriented behavior (no direct completion by María)
-- Actions:
-  - Solicitar confirmación
-  - Ver detalle (modal)
-  - Contactar cuidador (routes to Messages compose)
-- Read-only caregiver daily report card
-- File: [src/features/tasks/TasksScreen.tsx](/Users/catalinadearzubiagamenghi/Documents/cureally/proto_alta/src/features/tasks/TasksScreen.tsx)
+Su perfil utiliza el mismo lenguaje visual, con badge “Miembro de la red” y accesos acotados a Datos de Juan, Red de cuidado, Stock e insumos y Mensajes.
 
-### Alerts
-- Family-oriented alert center
-- Alert examples and actions:
-  - Solicitar confirmación
-  - Contactar cuidadora (routes to Messages compose)
-  - Ver calendario
-  - Ver informe (bottom sheet)
-- High-priority (`Alta`) alerts now visually emphasized with soft danger tint/border/icon.
-- Files:
-  - [src/features/alerts/AlertsScreen.tsx](/Users/catalinadearzubiagamenghi/Documents/cureally/proto_alta/src/features/alerts/AlertsScreen.tsx)
-  - [src/components/cards/AlertList.tsx](/Users/catalinadearzubiagamenghi/Documents/cureally/proto_alta/src/components/cards/AlertList.tsx)
+## 7. Experiencia del cuidador
 
-### Messages
-- Main section in bottom nav (replacing Tareas tab)
-- Conversation list with avatar/name/role/preview/time/status
-- Card action simplified to only “Abrir conversación”
-- “Nuevo” status badge now green (not red)
-- Top “Enviar nuevo mensaje” button removed
-- Conversation bottom sheet supports sending messages in-thread
-- Compose sheet still exists and is used when coming from Tasks/Alerts `Contactar` actions via route state
-- File: [src/features/messages/MessagesScreen.tsx](/Users/catalinadearzubiagamenghi/Documents/cureally/proto_alta/src/features/messages/MessagesScreen.tsx)
+María y Pedro comparten la misma arquitectura y reciben contenido filtrado por su `careMemberId`.
 
-### Profile
-- Patient info + care network + profile action cards
-- Role correction applied in care network mock (`Juan` as `Padre`)
-- Added `Cerrar sesión` destructive action
-- File: [src/features/profile/ProfileScreen.tsx](/Users/catalinadearzubiagamenghi/Documents/cureally/proto_alta/src/features/profile/ProfileScreen.tsx)
+El Inicio “Mi turno” incluye:
 
-## 7) Important reusable components
+- saludo e identidad;
+- tarjeta de Juan con la misma foto usada por la experiencia familiar;
+- estado del turno;
+- próxima medicación;
+- acciones rápidas operativas;
+- tareas pendientes;
+- agenda del día;
+- alertas relevantes ordenadas por prioridad;
+- accesos de consulta a Agenda y Stock.
 
-- Activity detail + optional modal behavior:
-  - [src/components/cards/ActivityList.tsx](/Users/catalinadearzubiagamenghi/Documents/cureally/proto_alta/src/components/cards/ActivityList.tsx)
-- Tasks list:
-  - [src/components/cards/TaskList.tsx](/Users/catalinadearzubiagamenghi/Documents/cureally/proto_alta/src/components/cards/TaskList.tsx)
-- Alerts list:
-  - [src/components/cards/AlertList.tsx](/Users/catalinadearzubiagamenghi/Documents/cureally/proto_alta/src/components/cards/AlertList.tsx)
-- App shell / persistent frame:
-  - [src/components/layout/AppShell.tsx](/Users/catalinadearzubiagamenghi/Documents/cureally/proto_alta/src/components/layout/AppShell.tsx)
-  - [src/components/layout/PatientContextStrip.tsx](/Users/catalinadearzubiagamenghi/Documents/cureally/proto_alta/src/components/layout/PatientContextStrip.tsx)
-- Bottom nav:
-  - [src/components/navigation/BottomNav.tsx](/Users/catalinadearzubiagamenghi/Documents/cureally/proto_alta/src/components/navigation/BottomNav.tsx)
+Pueden:
 
-## 8) Visual system and spacing notes
+- consultar y completar sus tareas;
+- registrar una medicación asignada como administrada;
+- agregar una novedad u observación;
+- completar un informe diario;
+- acceder a mensajes;
+- consultar la información de Juan en modo lectura;
+- consultar el calendario compartido e identificar actividades propias;
+- consultar stock y últimos movimientos;
+- registrar una reposición si realizaron una compra;
+- señalar un faltante, generando una alerta compartida.
 
-Tokens:
-- [src/styles/tokens.css](/Users/catalinadearzubiagamenghi/Documents/cureally/proto_alta/src/styles/tokens.css)
+No pueden:
 
-Main style file:
-- [src/styles/components.css](/Users/catalinadearzubiagamenghi/Documents/cureally/proto_alta/src/styles/components.css)
+- gestionar la red;
+- crear o reorganizar la planificación general;
+- reasignar responsables;
+- modificar la información de Juan;
+- acceder a acciones administrativas de Carina.
 
-Current design direction:
-- cream canvas
-- white/cream cards
-- teal accents
-- subtle borders/shadows
-- soft but professional surfaces
+El perfil cuidador muestra avatar, rol, turno activo, Juan asociado, métricas, accesos a Datos de Juan, registros, mensajes y Mi turno, más permisos resumidos visualmente.
 
-Recent layout fix:
-- Reduced excessive blank area above bottom nav by changing `app-shell__content` bottom padding.
+## 8. Estado compartido y flujo demostrable
 
-## 9) Known caveats / technical debt to be aware of
+El flujo principal previsto para la demo es:
 
-1. `AuthProvider` exposes `loginDemoMode` but it is currently unused in UI.
-2. `CareStore` still has `confirmAlert` method from earlier behavior; current Alerts flow doesn’t use it.
-3. `ProximaActividadCard` component exists but Home currently no longer uses it (kept in repo).
-4. “Today” in Home is currently hardcoded to `2026-05-13` for predictable prototype output.
-5. Data is in-memory (except auth localStorage). Refresh resets activities/tasks/alerts to mock defaults.
+1. Carina asigna o supervisa.
+2. María o Pedro consultan su turno.
+3. El cuidador ejecuta y registra.
+4. Carina o Diego visualizan la actualización.
 
-## 10) QA state at handoff
+Ejemplos implementados:
 
-Most recent checks run successfully:
-- `npm run lint`
-- `npm run build`
+- Cuidador completa una tarea → aparece confirmada para la familia.
+- Cuidador administra medicación → se registra la acción y la familia la ve.
+- Cuidador agrega una novedad → aparece en el Inicio familiar.
+- Cuidador completa un informe → aparece en Informes.
+- Familiar o cuidador registra una reposición → cambia el stock y queda trazabilidad del autor.
+- Cuidador administra medicación → disminuye una unidad del producto asociado y se genera un movimiento negativo.
+- Cuidador señala faltante → se agrega una alerta para la red.
 
-No automated test suite is configured beyond lint/build.
+## 9. Stock y trazabilidad
 
-## 11) How to run locally
+La pantalla de Stock maneja medicamentos e insumos con cantidades simples, estados visuales y últimos movimientos.
 
-1. `npm install`
-2. `npm run dev`
-3. Open `http://localhost:5173/`
+Cada movimiento registra:
 
-## 12) Recent commit history (most relevant)
+- producto mediante `stockItemId`;
+- cantidad positiva o negativa;
+- tipo (`reposicion` o `administracion`);
+- autor mediante `actorId`;
+- observación opcional;
+- referencia temporal mock.
 
-- `b9072f7` Polish welcome screen and integrate CureAlly logo
-- `689cb91` Refine family flow navigation, alerts, and messages UX
-- `b683cd9` Refactor alerts into family-oriented coordination flow
-- `f35a43a` Add functional task detail and caregiver contact modals
-- `486ec63` Polish UI and enhance calendar flow with month nav and recurrence
-- `8cdc789` refine login spacing and warm visual system polish
-- `f820daf` add implementation
+No incluye compras online, farmacias, lotes, vencimientos, reservas ni gestión avanzada de inventario.
 
-## 13) Practical continuation guidance for next agent
+## 10. Alertas
 
-If new requests come in, preserve these invariants unless explicitly changed by user:
-- Spanish UI text
-- family coordinator role framing (María does not directly mark caregiving tasks as completed)
-- 4-tab bottom nav (`Inicio`, `Mensajes`, `Alertas`, `Perfil`)
-- `Tareas` and `Calendario` reachable from Home quick access
-- cream + teal warm style
-- low-fidelity but polished, professional visual tone
+Las alertas se ordenan siempre por:
 
-For future screen polish, prefer editing shared classes in `components.css` over per-screen one-off rules unless the request is intentionally screen-specific.
+1. Alta.
+2. Media.
+3. Baja.
 
+Dentro de la misma severidad se utiliza horario/recencia como segundo criterio. El helper compartido está en `src/features/alerts/alertSorting.ts` y se usa tanto en el centro familiar como en el Inicio cuidador.
+
+## 11. Pantallas y componentes relevantes
+
+- `src/features/home/HomeScreen.tsx`: dashboard familiar.
+- `src/features/caregiver/CaregiverHomeScreen.tsx`: dashboard operativo.
+- `src/features/caregiver/CaregiverTasksScreen.tsx`: tareas propias.
+- `src/features/caregiver/CaregiverLogScreen.tsx`: medicación, novedades e informe.
+- `src/features/caregiver/CaregiverProfileScreen.tsx`: perfil cuidador.
+- `src/features/profile/ProfileScreen.tsx`: perfil adaptado para Carina y Diego.
+- `src/features/calendar/CalendarScreen.tsx`: calendario familiar y agenda cuidadora en modo consulta.
+- `src/features/stock/StockScreen.tsx`: stock compartido y trazabilidad.
+- `src/features/patient/PatientProfileScreen.tsx`: información de Juan y red de cuidado.
+- `src/components/cards/ActivityList.tsx`: actividades y señalización de responsable.
+- `src/components/cards/AlertList.tsx`: presentación ordenada de alertas.
+- `src/components/cards/QuickAccessGrid.tsx`: accesos visuales reutilizados entre roles.
+- `src/components/navigation/BottomNav.tsx`: navegación diferenciada por rol.
+
+## 12. Decisiones de alcance
+
+Fuera del MVP actual:
+
+- backend y persistencia real;
+- autenticación productiva;
+- historial de salud avanzado;
+- integraciones con prepagas, HealthTech o farmacias;
+- telemedicina;
+- inteligencia artificial;
+- pagos o compras online;
+- inventario avanzado;
+- mejoras generales de mensajería ajenas al flujo de coordinación.
+
+## 13. Limitaciones conocidas
+
+1. El estado funcional vive en memoria y se reinicia al refrescar.
+2. La sesión demo se recuerda, pero no existen usuarios ni permisos de servidor.
+3. Las fechas y “hoy” están fijadas en `DEMO_TODAY = 2026-05-13` para que la tesis tenga una demostración predecible.
+4. Los horarios y textos de recencia son mock.
+5. El aviso de faltante es deliberadamente simple y genera una alerta; no abre un flujo de resolución.
+6. La foto de Juan es un asset local grande y podría optimizarse si el peso del bundle se vuelve relevante.
+7. No hay suite automatizada de tests; las validaciones disponibles son ESLint, TypeScript/Vite build y revisión manual de recorridos.
+
+## 14. Validación y ejecución local
+
+Comandos:
+
+```bash
+npm install
+npm run dev
+npm run lint
+npm run build
+```
+
+Vite utiliza normalmente `http://localhost:5173/`; durante la última revisión local se utilizó `http://127.0.0.1:5188/` para evitar conflictos con otros proyectos.
+
+Antes del cierre de este handoff se validaron visualmente:
+
+- selección de los cuatro perfiles;
+- Inicio y Perfil de Carina, Diego, María y Pedro;
+- límites de permisos de Diego y cuidadores;
+- agenda cuidadora en modo consulta;
+- orden de alertas;
+- reposiciones familiares y cuidadoras;
+- señalamiento de faltante;
+- administración de medicación y descuento de stock;
+- reflejo de acciones entre roles durante la misma sesión.
+
+## 15. Commits funcionales de esta evolución
+
+- `41968b7` Add demo roles and normalize care identities
+- `0aaef68` Build caregiver dashboard and operational flows
+- `351d384` Reflect caregiver records in family experience
+- `d74c6db` Tighten shared role boundaries and caregiver links
+- `5f7fd86` Align thesis identities and add stock traceability
+- `7ad97d8` Refine caregiver navigation and visual continuity
+- `ab9db2a` Unify family profile experience
+
+## 16. Invariantes para continuar
+
+Salvo instrucción explícita, preservar:
+
+- `planning` como base de trabajo y rama desplegable;
+- Juan exclusivamente como persona cuidada;
+- Carina como coordinadora principal;
+- Diego como familiar colaborador;
+- María y Pedro como cuidadores profesionales;
+- relaciones por ID, no por nombre;
+- separación entre supervisión familiar y ejecución cuidadora;
+- estado compartido dentro de la misma sesión;
+- navegación inferior de cuatro pestañas;
+- estética cálida y consistente entre roles;
+- alcance de prototipo de tesis sin sobrearquitectura.
